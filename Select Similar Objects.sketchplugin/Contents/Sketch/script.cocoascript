@@ -1,0 +1,206 @@
+// TODO: Make it work with multiple fills
+// TODO: Error handling (nothing selected, selection is group, selection doesn't have fills, etc.)
+// TODO: Unify functions
+
+var selectInAllArtboards = false;
+
+var firstVisibleFill = function(layer)
+{
+	for(var i = 0; i < layer.style().fills().count(); i++)
+	{
+		var fill = layer.style().fills().objectAtIndex(i);
+		if(fill.isEnabled())
+		{
+			return fill;
+		}
+	}
+	
+	return false;
+}
+
+var firstVisibleBorder = function(layer)
+{
+	for(var i = 0; i < layer.style().borders().count(); i++)
+	{
+		var border = layer.style().borders().objectAtIndex(i);
+		if(border.isEnabled())
+		{
+			return border;
+		}
+	}
+	
+	return false;
+}
+
+var selectionErrorHandling = function(obj)
+{
+	if(obj.layers().count() == 0) // Nothing selected
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a layer and try again." withTitle:"No layers selected"];
+		return false;
+	}
+	
+	if(obj.layers().count() > 1) // More than one layer selected
+	{
+		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with multiple layers. Please select a single layer and try again." withTitle:"Multiple layers selected"];
+		return false;
+	}
+	
+	if([obj class] == MSLayerGroup) // Group selected
+	{
+		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with groups. Please select a layer instead." withTitle:"You've selected a group"];
+		return false;
+	}
+	
+	return true;
+}
+
+var selectSameFill = function(context)
+{
+	var selection = context.selection;
+	var doc = context.document;
+	var page = doc.currentPage();
+	var selectedLayer = selection.firstObject();
+	
+	// Error handling
+	if(!selectionErrorHandling(selectedLayer)) return;
+	
+	var fill = firstVisibleFill(selectedLayer);
+	if(!fill) // The layer doesn't have any visible fills
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one fill and try again." withTitle:"No visible fills"];
+		return;
+	}
+	
+	var fillColor = fill.color();
+	
+	if(selectInAllArtboards)
+	{
+		for (var j = 0; j < page.artboards().count(); j++) {
+			var artboard = page.artboards().objectAtIndex(j);
+
+			for (var k = 0; k < artboard.layers().count(); k++) {
+				var layer = artboard.layers().objectAtIndex(k);
+
+				handleObject(layer, fillColor, selectIfSameFill);
+
+			}
+		}
+	}
+	else
+	{
+		var artboard = page.currentArtboard();
+
+		for (var k = 0; k < artboard.layers().count(); k++) {
+			var layer = artboard.layers().objectAtIndex(k);
+
+			handleObject(layer, fillColor, selectIfSameFill);
+
+		}
+	}
+
+}
+
+var selectSameBorder = function(context)
+{
+	var selection = context.selection;
+	var doc = context.document;
+	var selectedLayer = selection.firstObject();
+	var page = doc.currentPage();
+	
+	// Error handling
+	if(!selectionErrorHandling(selectedLayer)) return;
+	
+	var border = firstVisibleBorder(selectedLayer);
+	if(!border) // The layer doesn't have any visible fills
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
+		return;
+	}
+	
+	var borderColor = border.color();
+	
+	if(selectInAllArtboards)
+	{
+		for (var j = 0; j < page.artboards().count(); j++) {
+			var artboard = page.artboards().objectAtIndex(j);
+
+			for (var k = 0; k < artboard.layers().count(); k++) {
+				var layer = artboard.layers().objectAtIndex(k);
+		
+				handleObject(layer, borderColor, selectIfSameBorder);
+
+			}
+		}
+	}
+	else
+	{
+		var artboard = page.currentArtboard();
+
+		for (var k = 0; k < artboard.layers().count(); k++) {
+			var layer = artboard.layers().objectAtIndex(k);
+	
+			handleObject(layer, borderColor, selectIfSameBorder);
+
+		}
+	}
+}
+
+var handleObject = function(obj, color, fn)
+{
+	// Check if it's a group
+	if([obj class] == MSLayerGroup)
+	{
+		for(var i = 0; i < obj.layers().count(); i++)
+		{
+			layer = obj.layers().objectAtIndex(i);
+			if([layer class] == MSLayerGroup)
+			{
+				handleObject(layer, color, fn);
+			}
+			else
+			{
+				var sif = fn.call(sif, obj.layers().objectAtIndex(i), color);
+			}
+		}
+	}
+	else
+	{
+		var sif = fn.call(sif, obj, color);
+	}
+	
+}
+
+var selectIfSameFill = function(layer, color)
+{
+	if(layer.style().fills().count() > 0) // If layer has at least one fill
+	{
+		for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
+		{
+			if(layer.style().fills().objectAtIndex(i).color().hexValue() == color.hexValue()
+			&& layer.style().fills().objectAtIndex(i).isEnabled()
+			&& layer.isVisible())
+			{
+				[layer select:true byExpandingSelection:true];
+			}
+		}
+		
+	}
+}
+
+var selectIfSameBorder = function(layer, color)
+{
+	if(layer.style().borders().count() > 0) // If layer has at least one fill
+	{
+		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every fill
+		{
+			if(layer.style().borders().objectAtIndex(i).color().hexValue() == color.hexValue()
+			&& layer.style().borders().objectAtIndex(i).isEnabled()
+			&& layer.isVisible())
+			{
+				[layer select:true byExpandingSelection:true];
+			}
+		}
+		
+	}
+}

@@ -1,0 +1,30 @@
+{
+  "author" : "Wessley Roche",
+  "commands" : [
+    {
+      "script" : "script.cocoascript",
+      "handler" : "selectSameFill",
+      "shortcut" : "cmd ctrl z",
+      "name" : "Fill Color",
+      "identifier" : "selectSameFill"
+    },
+	{
+      "script" : "script.cocoascript",
+      "handler" : "selectSameBorder",
+      "shortcut" : "cmd ctrl x",
+      "name" : "Border Color",
+      "identifier" : "selectSameBorder"
+    }
+  ],
+  "menu": {
+    "items": [
+      "selectSameFill",
+	  "selectSameBorder"
+    ]
+  },
+  "identifier" : "me.wessley.selectSimilarObjects",
+  "version" : "1.0",
+  "description" : "A plugin that selects objects with similar attributes.",
+  "authorEmail" : "wessley@mac.com",
+  "name" : "Select Similar Objects"
+}
