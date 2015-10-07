@@ -14,17 +14,33 @@
       "shortcut" : "cmd ctrl x",
       "name" : "Border Color",
       "identifier" : "selectSameBorder"
+    },
+	{
+      "script" : "script.cocoascript",
+      "handler" : "selectSameBorderThickness",
+      "shortcut" : "cmd ctrl v",
+      "name" : "Border Thickness",
+      "identifier" : "selectSameBorderThickness"
+    },
+	{
+      "script" : "script.cocoascript",
+      "handler" : "selectSameFont",
+      "shortcut" : "cmd ctrl c",
+      "name" : "Font",
+      "identifier" : "selectSameFont"
     }
   ],
   "menu": {
     "items": [
       "selectSameFill",
-	  "selectSameBorder"
+	  "selectSameBorder",
+	  "selectSameFont",
+	  "selectSameBorderThickness"
     ]
   },
   "identifier" : "me.wessley.selectSimilarObjects",
   "version" : "1.0",
-  "description" : "A plugin that selects objects with similar attributes.",
+  "description" : "A plugin that selects objects with similar attributes to those of the object currently selected.",
   "authorEmail" : "wessley@mac.com",
   "name" : "Select Similar Objects"
 }
