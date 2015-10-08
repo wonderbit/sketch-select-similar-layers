@@ -28,6 +28,13 @@
       "shortcut" : "cmd ctrl c",
       "name" : "Font",
       "identifier" : "selectSameFont"
+    },
+	{
+      "script" : "script.cocoascript",
+      "handler" : "selectSameOpacity",
+      "shortcut" : "cmd ctrl b",
+      "name" : "Opacity",
+      "identifier" : "selectSameOpacity"
     }
   ],
   "menu": {
@@ -35,12 +42,13 @@
       "selectSameFill",
 	  "selectSameBorder",
 	  "selectSameFont",
-	  "selectSameBorderThickness"
+	  "selectSameBorderThickness",
+	  "selectSameOpacity"
     ]
   },
-  "identifier" : "me.wessley.selectSimilarObjects",
+  "identifier" : "me.wessley.selectSimilarLayers",
   "version" : "1.0",
-  "description" : "A plugin that selects objects with similar attributes to those of the object currently selected.",
+  "description" : "A plugin that selects layers with similar attributes to those of the layer currently selected.",
   "authorEmail" : "wessley@mac.com",
-  "name" : "Select Similar Objects"
+  "name" : "Select Similar Layers"
 }

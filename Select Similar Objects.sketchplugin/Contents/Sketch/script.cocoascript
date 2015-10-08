@@ -1,8 +1,227 @@
-// TODO: Make it work with multiple fills
-// TODO: Error handling (selection doesn't have fills, etc.)
-// TODO: Unify functions
+// TODO: Handle multiple fills properly?
+// TODO: Handle layer group opacity
 
 var selectInAllArtboards = false;
+
+var selectSameFill = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	var fill = firstVisibleFill(selectedLayer);
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	if(!fill) // Does the layer have any visible fills?
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one fill and try again." withTitle:"No visible fills"];
+		return;
+	}
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameFill);
+
+}
+
+var selectSameBorder = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	var border = firstVisibleBorder(selectedLayer);
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	if(!border) // Does the layer have any visible borders?
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
+		return;
+	}
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameBorder);
+}
+
+var selectSameBorderThickness = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	var border = firstVisibleBorder(selectedLayer);
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	
+	if(!border) // Does the layer have any visible borders?
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
+		return;
+	}
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameBorderThickness);
+}
+
+var selectSameFont = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
+		return;
+	}
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameFontAndSize);
+}
+
+var selectSameOpacity = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameOpacity);
+}
+
+/***********************/
+/** Callback functions */
+/***********************/
+
+var selectIfSameFill = function(layer, selectedLayer)
+{
+	var color = firstVisibleFill(selectedLayer).color();
+	
+	if(layer.style().fills().count() > 0)
+	{
+		for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
+		{
+			if(layer.style().fills().objectAtIndex(i).color().hexValue() == color.hexValue()
+			&& layer.style().fills().objectAtIndex(i).isEnabled()
+			&& layer.isVisible())
+			{
+				[layer select:true byExpandingSelection:true];
+			}
+		}
+		
+	}
+}
+
+var selectIfSameBorder = function(layer, selectedLayer)
+{
+	var color = firstVisibleBorder(selectedLayer).color();
+	
+	if(layer.style().borders().count() > 0) // If layer has at least one border
+	{
+		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
+		{
+			if(layer.style().borders().objectAtIndex(i).color().hexValue() == color.hexValue()
+			&& layer.style().borders().objectAtIndex(i).isEnabled()
+			&& layer.isVisible())
+			{
+				[layer select:true byExpandingSelection:true];
+			}
+		}
+		
+	}
+}
+
+var selectIfSameBorderThickness = function(layer, selectedLayer)
+{
+	var thickness = firstVisibleBorder(selectedLayer).thickness();
+	
+	if(layer.style().borders().count() > 0) // If layer has at least one border
+	{
+		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
+		{
+			if(layer.style().borders().objectAtIndex(i).thickness() == thickness
+			&& layer.isVisible())
+			{
+				[layer select:true byExpandingSelection:true];
+			}
+		}
+		
+	}
+}
+
+var selectIfSameFontAndSize = function(layer, selectedLayer)
+{
+	if([layer class] == MSTextLayer)
+	{
+		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
+			&& layer.fontSize() == selectedLayer.fontSize()
+			&& layer.isVisible())
+		{
+			[layer select:true byExpandingSelection:true];
+		}
+	}
+}
+
+var selectIfSameOpacity = function(layer, selectedLayer)
+{
+	if(selectedLayer.style().contextSettings().opacity() == layer.style().contextSettings().opacity()
+	&& layer.isVisible())
+	{
+		[layer select:true byExpandingSelection:true];
+	}
+}
+
+/**********************/
+/** Utility functions */
+/**********************/
+
+var iterateThroughLayers = function(context, attr, callback)
+{
+	var doc = context.document;
+	var page = doc.currentPage();
+	
+	if(selectInAllArtboards)
+	{
+		for (var j = 0; j < page.artboards().count(); j++) {
+			var artboard = page.artboards().objectAtIndex(j);
+
+			for (var k = 0; k < artboard.layers().count(); k++) {
+				var layer = artboard.layers().objectAtIndex(k);
+
+				handleObject(layer, attr, callback);
+
+			}
+		}
+	}
+	else
+	{
+		var artboard = page.currentArtboard();
+
+		for (var k = 0; k < artboard.layers().count(); k++) {
+			var layer = artboard.layers().objectAtIndex(k);
+
+			handleObject(layer, attr, callback);
+
+		}
+	}
+}
+
+var handleObject = function(obj, color, fn)
+{
+	// Check if it's a group
+	if([obj class] == MSLayerGroup)
+	{
+		for(var i = 0; i < obj.layers().count(); i++)
+		{
+			layer = obj.layers().objectAtIndex(i);
+			if([layer class] == MSLayerGroup)
+			{
+				handleObject(layer, color, fn);
+			}
+			else
+			{
+				var sif = fn.call(sif, obj.layers().objectAtIndex(i), color);
+			}
+		}
+	}
+	else if([obj class] == MSSliceLayer)
+	{
+		return;
+	}
+	else
+	{
+		var sif = fn.call(sif, obj, color);
+	}
+}
 
 var firstVisibleFill = function(layer)
 {
@@ -34,7 +253,6 @@ var firstVisibleBorder = function(layer)
 
 var selectionErrorHandling = function(context)
 {
-	log("context selection:" + context.selection);
 	if(context.selection.count() == 0) // Nothing selected
 	{
 		[[NSApplication sharedApplication] displayDialog:"You must select a layer in order to use this plugin." withTitle:"No layers selected"];
@@ -55,278 +273,4 @@ var selectionErrorHandling = function(context)
 	}
 	
 	return true;
-}
-
-var selectSameFill = function(context)
-{
-	var selection = context.selection;
-	var doc = context.document;
-	var page = doc.currentPage();
-	var selectedLayer = selection.firstObject();
-	
-	// Error handling
-	if(!selectionErrorHandling(context)) return;
-	
-	var fill = firstVisibleFill(selectedLayer);
-	if(!fill) // The layer doesn't have any visible fills
-	{
-		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one fill and try again." withTitle:"No visible fills"];
-		return;
-	}
-	
-	var fillColor = fill.color();
-	
-	if(selectInAllArtboards)
-	{
-		for (var j = 0; j < page.artboards().count(); j++) {
-			var artboard = page.artboards().objectAtIndex(j);
-
-			for (var k = 0; k < artboard.layers().count(); k++) {
-				var layer = artboard.layers().objectAtIndex(k);
-
-				handleObject(layer, fillColor, selectIfSameFill);
-
-			}
-		}
-	}
-	else
-	{
-		var artboard = page.currentArtboard();
-
-		for (var k = 0; k < artboard.layers().count(); k++) {
-			var layer = artboard.layers().objectAtIndex(k);
-
-			handleObject(layer, fillColor, selectIfSameFill);
-
-		}
-	}
-
-}
-
-var selectSameBorder = function(context)
-{
-	var selection = context.selection;
-	var doc = context.document;
-	var selectedLayer = selection.firstObject();
-	var page = doc.currentPage();
-	
-	// Error handling
-	if(!selectionErrorHandling(context)) return;
-	
-	var border = firstVisibleBorder(selectedLayer);
-	if(!border) // The layer doesn't have any visible fills
-	{
-		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
-		return;
-	}
-	
-	var borderColor = border.color();
-	
-	if(selectInAllArtboards)
-	{
-		for (var j = 0; j < page.artboards().count(); j++) {
-			var artboard = page.artboards().objectAtIndex(j);
-
-			for (var k = 0; k < artboard.layers().count(); k++) {
-				var layer = artboard.layers().objectAtIndex(k);
-		
-				handleObject(layer, borderColor, selectIfSameBorder);
-
-			}
-		}
-	}
-	else
-	{
-		var artboard = page.currentArtboard();
-
-		for (var k = 0; k < artboard.layers().count(); k++) {
-			var layer = artboard.layers().objectAtIndex(k);
-	
-			handleObject(layer, borderColor, selectIfSameBorder);
-
-		}
-	}
-}
-
-var selectSameBorderThickness = function(context)
-{
-	var selection = context.selection;
-	var doc = context.document;
-	var selectedLayer = selection.firstObject();
-	var page = doc.currentPage();
-	
-	// Error handling
-	if(!selectionErrorHandling(context)) return;
-	
-	var border = firstVisibleBorder(selectedLayer);
-	if(!border) // The layer doesn't have any visible borders
-	{
-		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
-		return;
-	}
-	var borderThickness = border.thickness();
-	
-	if(selectInAllArtboards)
-	{
-		for (var j = 0; j < page.artboards().count(); j++) {
-			var artboard = page.artboards().objectAtIndex(j);
-
-			for (var k = 0; k < artboard.layers().count(); k++) {
-				var layer = artboard.layers().objectAtIndex(k);
-		
-				handleObject(layer, borderThickness, selectIfSameBorderThickness);
-
-			}
-		}
-	}
-	else
-	{
-		var artboard = page.currentArtboard();
-
-		for (var k = 0; k < artboard.layers().count(); k++) {
-			var layer = artboard.layers().objectAtIndex(k);
-	
-			handleObject(layer, borderThickness, selectIfSameBorderThickness);
-
-		}
-	}
-}
-
-var selectSameFont = function(context)
-{
-	var selection = context.selection;
-	var doc = context.document;
-	var selectedLayer = selection.firstObject();
-	var page = doc.currentPage();
-	
-	
-	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
-	{
-		log("not a text layer");
-		return;
-	}
-	
-	if(selectInAllArtboards)
-	{
-		for (var j = 0; j < page.artboards().count(); j++) {
-			var artboard = page.artboards().objectAtIndex(j);
-
-			for (var k = 0; k < artboard.layers().count(); k++) {
-				var layer = artboard.layers().objectAtIndex(k);
-				
-				handleObject(layer, selectedLayer, selectIfSameFont);
-			}
-		}
-	}
-	else
-	{
-		var artboard = page.currentArtboard();
-
-		for (var k = 0; k < artboard.layers().count(); k++) {
-			var layer = artboard.layers().objectAtIndex(k);
-			
-			handleObject(layer, selectedLayer, selectIfSameFontAndSize);
-
-		}
-	}
-}
-
-var handleObject = function(obj, color, fn)
-{
-	// Check if it's a group
-	if([obj class] == MSLayerGroup)
-	{
-		for(var i = 0; i < obj.layers().count(); i++)
-		{
-			layer = obj.layers().objectAtIndex(i);
-			if([layer class] == MSLayerGroup)
-			{
-				handleObject(layer, color, fn);
-			}
-			else
-			{
-				var sif = fn.call(sif, obj.layers().objectAtIndex(i), color);
-			}
-		}
-	}
-	else
-	{
-		var sif = fn.call(sif, obj, color);
-	}
-	
-}
-
-var selectIfSameFill = function(layer, color)
-{
-	if(layer.style().fills().count() > 0) // If layer has at least one fill
-	{
-		for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
-		{
-			if(layer.style().fills().objectAtIndex(i).color().hexValue() == color.hexValue()
-			&& layer.style().fills().objectAtIndex(i).isEnabled()
-			&& layer.isVisible())
-			{
-				[layer select:true byExpandingSelection:true];
-			}
-		}
-		
-	}
-}
-
-var selectIfSameBorder = function(layer, color)
-{
-	if(layer.style().borders().count() > 0) // If layer has at least one fill
-	{
-		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every fill
-		{
-			if(layer.style().borders().objectAtIndex(i).color().hexValue() == color.hexValue()
-			&& layer.style().borders().objectAtIndex(i).isEnabled()
-			&& layer.isVisible())
-			{
-				[layer select:true byExpandingSelection:true];
-			}
-		}
-		
-	}
-}
-
-var selectIfSameBorderThickness = function(layer, thickness)
-{
-	if(layer.style().borders().count() > 0) // If layer has at least one fill
-	{
-		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every fill
-		{
-			if(layer.style().borders().objectAtIndex(i).thickness() == thickness
-			&& layer.isVisible())
-			{
-				[layer select:true byExpandingSelection:true];
-			}
-		}
-		
-	}
-}
-
-var selectIfSameFont = function(layer, selectedLayer)
-{
-	if([layer class] == MSTextLayer)
-	{
-		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
-		&& layer.isVisible())
-		{
-			[layer select:true byExpandingSelection:true];
-		}
-	}
-}
-
-var selectIfSameFontAndSize = function(layer, selectedLayer)
-{
-	if([layer class] == MSTextLayer)
-	{
-		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
-			&& layer.fontSize() == selectedLayer.fontSize()
-			&& layer.isVisible())
-		{
-			[layer select:true byExpandingSelection:true];
-		}
-	}
 }
