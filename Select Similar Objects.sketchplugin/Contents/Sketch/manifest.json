@@ -4,37 +4,44 @@
     {
       "script" : "script.cocoascript",
       "handler" : "selectSameFill",
-      "shortcut" : "cmd ctrl z",
+      "shortcut" : "ctrl shift 1",
       "name" : "Fill Color",
       "identifier" : "selectSameFill"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameBorder",
-      "shortcut" : "cmd ctrl x",
+      "shortcut" : "ctrl shift 2",
       "name" : "Border Color",
       "identifier" : "selectSameBorder"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameBorderThickness",
-      "shortcut" : "cmd ctrl v",
+      "shortcut" : "ctrl shift 3",
       "name" : "Border Thickness",
       "identifier" : "selectSameBorderThickness"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameFont",
-      "shortcut" : "cmd ctrl c",
+      "shortcut" : "ctrl shift 4",
       "name" : "Font",
       "identifier" : "selectSameFont"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameOpacity",
-      "shortcut" : "cmd ctrl b",
+      "shortcut" : "ctrl shift 5",
       "name" : "Opacity",
       "identifier" : "selectSameOpacity"
+    },
+	{
+      "script" : "script.cocoascript",
+      "handler" : "selectSameBlendMode",
+      "shortcut" : "ctrl shift 6",
+      "name" : "Blend Mode",
+      "identifier" : "selectSameBlendMode"
     }
   ],
   "menu": {
@@ -43,7 +50,8 @@
 	  "selectSameBorder",
 	  "selectSameFont",
 	  "selectSameBorderThickness",
-	  "selectSameOpacity"
+	  "selectSameOpacity",
+	  "selectSameBlendMode"
     ]
   },
   "identifier" : "me.wessley.selectSimilarLayers",

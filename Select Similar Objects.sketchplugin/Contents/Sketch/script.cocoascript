@@ -1,5 +1,7 @@
 // TODO: Handle multiple fills properly?
 // TODO: Handle layer group opacity
+// TODO: Select layers with the same shadow / inner shadow
+// TODO: Select same symbols
 
 var selectInAllArtboards = false;
 
@@ -78,6 +80,16 @@ var selectSameOpacity = function(context)
 	iterateThroughLayers(context, selectedLayer, selectIfSameOpacity);
 }
 
+var selectSameBlendMode = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameBlendMode);
+}
+
 /***********************/
 /** Callback functions */
 /***********************/
@@ -154,6 +166,15 @@ var selectIfSameFontAndSize = function(layer, selectedLayer)
 var selectIfSameOpacity = function(layer, selectedLayer)
 {
 	if(selectedLayer.style().contextSettings().opacity() == layer.style().contextSettings().opacity()
+	&& layer.isVisible())
+	{
+		[layer select:true byExpandingSelection:true];
+	}
+}
+
+var selectIfSameBlendMode = function(layer, selectedLayer)
+{
+	if(selectedLayer.style().contextSettings().blendMode() == layer.style().contextSettings().blendMode()
 	&& layer.isVisible())
 	{
 		[layer select:true byExpandingSelection:true];
