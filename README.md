@@ -2,9 +2,9 @@
 
 ![Sketch Select Similar Layers](http://wessley.me/images/SelectSimilarLayersPlugin.png)
 
-A Sketch plugin that selects layers with the same fill color, border color, border thickness, font, opacity or blending mode.
+Inspired by Illustrator's "Select Similar Objects" feature, **Select Similar Layers** is a Sketch plugin that selects the other layers with the same attributes as the one you've currently selected. It works with fill color, border color, border thickness, font, opacity or blending mode.
 
-Select a layer and hit:
+Just select a layer and hit:
 - **⌃⇧1** to select layers with the same **fill color**.
 - **⌃⇧2** to select layers with the same **border color**.
 - **⌃⇧3** to select layers with the same **border thickness**.
