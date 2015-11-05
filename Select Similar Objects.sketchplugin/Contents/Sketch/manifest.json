@@ -4,42 +4,42 @@
     {
       "script" : "script.cocoascript",
       "handler" : "selectSameFill",
-      "shortcut" : "ctrl shift 1",
+      "shortcut" : "ctrl alt 1",
       "name" : "Fill Color",
       "identifier" : "selectSameFill"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameBorder",
-      "shortcut" : "ctrl shift 2",
+      "shortcut" : "ctrl alt 2",
       "name" : "Border Color",
       "identifier" : "selectSameBorder"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameBorderThickness",
-      "shortcut" : "ctrl shift 3",
+      "shortcut" : "ctrl alt 3",
       "name" : "Border Thickness",
       "identifier" : "selectSameBorderThickness"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameFont",
-      "shortcut" : "ctrl shift 4",
+      "shortcut" : "ctrl alt 4",
       "name" : "Font",
       "identifier" : "selectSameFont"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameOpacity",
-      "shortcut" : "ctrl shift 5",
+      "shortcut" : "ctrl alt 5",
       "name" : "Opacity",
       "identifier" : "selectSameOpacity"
     },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameBlendMode",
-      "shortcut" : "ctrl shift 6",
+      "shortcut" : "ctrl alt 6",
       "name" : "Blend Mode",
       "identifier" : "selectSameBlendMode"
     }
@@ -58,5 +58,5 @@
   "version" : "1.0",
   "description" : "A plugin that selects layers with similar attributes to those of the layer currently selected.",
   "authorEmail" : "wessley@mac.com",
-  "name" : "Select Similar Layers"
+  "name" : "Select Layers with the Same…"
 }
