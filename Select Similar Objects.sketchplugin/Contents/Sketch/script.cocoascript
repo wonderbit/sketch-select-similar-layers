@@ -144,6 +144,7 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
 		{
 			if(layer.style().borders().objectAtIndex(i).thickness() == thickness
+			&& layer.style().borders().objectAtIndex(i).isEnabled()
 			&& layer.isVisible())
 			{
 				[layer select:true byExpandingSelection:true];
