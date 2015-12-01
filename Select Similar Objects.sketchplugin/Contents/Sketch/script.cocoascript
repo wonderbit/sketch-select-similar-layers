@@ -189,8 +189,9 @@ var iterateThroughLayers = function(context, attr, callback)
 {
 	var doc = context.document;
 	var page = doc.currentPage();
+	var currentArtboard = page.currentArtboard(); // if selected object is not inside of an artboard, this will be null.
 	
-	if(selectInAllArtboards)
+	if(selectInAllArtboards || !currentArtboard)
 	{
 		for (var j = 0; j < page.artboards().count(); j++) {
 			var artboard = page.artboards().objectAtIndex(j);
@@ -206,7 +207,7 @@ var iterateThroughLayers = function(context, attr, callback)
 	else
 	{
 		var artboard = page.currentArtboard();
-
+		
 		for (var k = 0; k < artboard.layers().count(); k++) {
 			var layer = artboard.layers().objectAtIndex(k);
 
