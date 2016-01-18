@@ -14,7 +14,9 @@ Just select a layer and hit:
 
 ### Installation
 1. Download and unzip [Select Similar Layers](https://github.com/wonderbit/sketch-select-similar-layers/archive/master.zip)
-2. Open Sketch.app and select *Plugins > Reveal Plugins Folder...*, then copy the plugin to that folder.
+2. Open Sketch.app and select **Plugins** › **Manage Plugins...**
+3. Click the ![gear](http://wellsosaur.us/ekFT/icon.png) icon and select **Show Plugins Folder**
+4. Copy the `.sketchplugin` file to that folder.
  
 ### Say thanks
 If you enjoy this plugin, please consider [buying me a coffee](https://www.paypal.me/wessley/5). You can also [follow  me on Twitter](http://twitter.com/wessley) or drop me a line.
