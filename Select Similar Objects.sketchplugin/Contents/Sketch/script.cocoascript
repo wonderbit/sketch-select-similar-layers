@@ -105,7 +105,7 @@ var selectIfSameFill = function(layer, selectedLayer)
 	{
 		for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
 		{
-			if(layer.style().fills().objectAtIndex(i).color().hexValue() == color.hexValue()
+			if(layer.style().fills().objectAtIndex(i).color().isEqual(color)
 			&& layer.style().fills().objectAtIndex(i).isEnabled()
 			&& layer.isVisible())
 			{
@@ -124,7 +124,7 @@ var selectIfSameBorder = function(layer, selectedLayer)
 	{
 		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
 		{
-			if(layer.style().borders().objectAtIndex(i).color().hexValue() == color.hexValue()
+			if(layer.style().borders().objectAtIndex(i).color().isEqual(color)
 			&& layer.style().borders().objectAtIndex(i).isEnabled()
 			&& layer.isVisible())
 			{
@@ -221,7 +221,7 @@ var iterateThroughLayers = function(context, attr, callback)
 
 var handleObject = function(obj, color, fn)
 {
-	log("handle object: "+[obj class]);
+// 	log("handle object: "+[obj class]);
 	
 	// Check if it's a slice
 	if([obj class] == MSSliceLayer) {
@@ -240,7 +240,7 @@ var handleObject = function(obj, color, fn)
 	}
 	
 	
-	log("	A shape layer");
+// 	log("	A shape layer");
 	var sif = fn.call(sif, obj, color);
 }
 
