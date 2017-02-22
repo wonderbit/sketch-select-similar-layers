@@ -1,9 +1,17 @@
-// TODO: Handle multiple fills properly?
 // TODO: Handle layer group opacity
 // TODO: Select layers with the same shadow / inner shadow
 // TODO: Select same symbols
+// TODO: Select layers with the same name
 
-var selectInAllArtboards = false;
+var debugMode = false;
+
+var selectInAllArtboards = true;
+
+var debugLog = function(msg) {
+	if (debugMode) {
+		log(msg);
+	}
+}
 
 var selectSameFill = function(context)
 {
@@ -99,21 +107,75 @@ var selectSameBlendMode = function(context)
 
 var selectIfSameFill = function(layer, selectedLayer)
 {
-	var color = firstVisibleFill(selectedLayer).color();
-	
-	if(layer.style().fills().count() > 0)
-	{
-		for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
-		{
-			if(layer.style().fills().objectAtIndex(i).color().isEqual(color)
-			&& layer.style().fills().objectAtIndex(i).isEnabled()
-			&& layer.isVisible())
+	for (var j = 0; j < selectedLayer.style().fills().count(); j++) {
+		var fill = selectedLayer.style().fills().objectAtIndex(j)
+		var shouldSelect = false;
+		
+		// debugLog("Selected layer is enabled: " + fill.isEnabled());
+		// debugLog("Selected layer color: " + fill.color());
+		// debugLog("Selected layer fill type: " + fill.fillType());
+		// debugLog("Selected layer gradient type: " + fill.gradient().gradientType());
+		// debugLog("Selected layer noise pattern: " + fill.noiseIndex());
+		
+		if (fill.isEnabled()) {
+			for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
 			{
-				[layer select:true byExpandingSelection:true];
+				var thisFill = layer.style().fills().objectAtIndex(i)
+			
+				if (thisFill.fillType() == fill.fillType()
+				&& thisFill.isEnabled()
+				&& layer.isVisible()) {
+					if (fill.fillType() == 0) { // Color
+						if (thisFill.color().isEqual(fill.color())) {
+							debugLog("* Same color");
+							shouldSelect = true;
+						}
+					} else if (fill.fillType() == 1) { // Gradient
+						if (compareGradients(thisFill.gradient(), fill.gradient())) {
+							debugLog("* Same gradient");
+							shouldSelect = true;
+						}
+					} else if (fill.fillType() == 4) { // Image
+						 if (thisFill.image().isEqual(fill.image())) {
+							debugLog("* Same image");
+							shouldSelect = true;
+						}
+					} else if (fill.fillType() == 5) { // Noise
+						if (thisFill.noiseIndex() == fill.noiseIndex()) {
+							debugLog("* Same noise pattern");
+							shouldSelect = true;
+						}
+					}
+				}
+			
+				if (shouldSelect) {
+					[layer select:true byExpandingSelection:true];
+				}
 			}
 		}
-		
 	}
+}
+
+var compareGradients = function(gradient1, gradient2) {
+	if(gradient1.gradientType() != gradient2.gradientType()) {
+		debugLog("different gradient types");
+		return false;
+	} 
+	
+	if(gradient1.stops().count() != gradient2.stops().count()) {
+		debugLog("different stop counts");
+		return false;
+	}
+	
+	for(var i = 0; i < gradient1.stops().count(); i++) {
+		if(!gradient1.stops().objectAtIndex(i).color().isEqual(gradient2.stops().objectAtIndex(i).color())) {
+			debugLog("different color at stop number "+i);
+			return false;
+		}
+	}
+	
+	debugLog("gradients are equal");
+	return true;
 }
 
 var selectIfSameBorder = function(layer, selectedLayer)
