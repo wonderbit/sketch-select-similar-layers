@@ -257,17 +257,15 @@ var iterateThroughLayers = function(context, attr, callback)
 	var page = doc.currentPage();
 	var artboard = page.currentArtboard(); // if selected object is not inside of an artboard, this will be null.
 	
+	debugLog("Objects on page: "+page.layers().count());
+	
 	if(selectInAllArtboards || !artboard)
 	{
-		for (var j = 0; j < page.artboards().count(); j++) {
-			var artboard = page.artboards().objectAtIndex(j);
-
-			for (var k = 0; k < artboard.layers().count(); k++) {
-				var layer = artboard.layers().objectAtIndex(k);
-
-				handleObject(layer, attr, callback);
-
-			}
+		for (var j = 0; j < page.layers().count(); j++) {
+			var layer = page.layers().objectAtIndex(j);
+			
+			handleObject(layer, attr, callback);
+			
 		}
 	}
 	else
@@ -285,13 +283,24 @@ var handleObject = function(obj, color, fn)
 {
 // 	log("handle object: "+[obj class]);
 	
-	// Check if it's a slice
+	// Is it a slice?
 	if([obj class] == MSSliceLayer) {
 		return;
 	}
 	
-	// Check if it's a group
+	// Is it a group?
 	if([obj class] == MSLayerGroup) {
+		for(var i = 0; i < obj.layers().count(); i++)
+		{
+			layer = obj.layers().objectAtIndex(i);
+			
+			handleObject(layer, color, fn);
+		}
+		return;
+	}
+	
+	// Is it an artboard?
+	if([obj class] == MSArtboardGroup) {
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
 			layer = obj.layers().objectAtIndex(i);
