@@ -101,6 +101,16 @@ var selectSameBlendMode = function(context)
 	iterateThroughLayers(context, selectedLayer, selectIfSameBlendMode);
 }
 
+var selectSameLayerName = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+	
+	// Error handling
+	if(!selectionErrorHandling(context)) return;
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameLayerName);
+}
+
 /***********************/
 /** Callback functions */
 /***********************/
@@ -244,6 +254,15 @@ var selectIfSameBlendMode = function(layer, selectedLayer)
 	&& layer.isVisible())
 	{
 		[layer select:true byExpandingSelection:true];
+	}
+}
+
+var selectIfSameLayerName = function(layer, selectedLayer)
+{
+	if([selectedLayer name] == [layer name])
+	{
+		[layer select:true byExpandingSelection:true];
+		return
 	}
 }
 
