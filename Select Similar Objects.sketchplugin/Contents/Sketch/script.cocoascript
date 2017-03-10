@@ -259,6 +259,11 @@ var iterateThroughLayers = function(context, attr, callback)
 	
 	if(selectInAllArtboards || !artboard)
 	{
+		if (page.artboards().count() === 0) {
+			[[NSApplication sharedApplication] displayDialog:"Please create an artboard first." withTitle:"No artboard present"];
+			return;
+		}
+
 		for (var j = 0; j < page.artboards().count(); j++) {
 			var artboard = page.artboards().objectAtIndex(j);
 
