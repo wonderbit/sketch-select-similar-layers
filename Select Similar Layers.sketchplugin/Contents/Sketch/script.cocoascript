@@ -1,7 +1,6 @@
-// TODO: Handle layer group opacity
 // TODO: Select layers with the same shadow / inner shadow
 // TODO: Select same symbols
-// TODO: Select layers with the same name
+// TODO: Select layers with the same shared style
 
 var debugMode = false;
 
@@ -16,7 +15,7 @@ var debugLog = function(msg) {
 var selectSameFill = function(context)
 {
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, false)) return;
 	
 	var selectedLayer = context.selection.firstObject();
 	var fill = firstVisibleFill(selectedLayer);
@@ -34,7 +33,7 @@ var selectSameFill = function(context)
 var selectSameBorder = function(context)
 {
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, false)) return;
 	
 	var selectedLayer = context.selection.firstObject();
 	var border = firstVisibleBorder(selectedLayer);
@@ -51,7 +50,7 @@ var selectSameBorder = function(context)
 var selectSameBorderThickness = function(context)
 {
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, false)) return;
 	
 	var selectedLayer = context.selection.firstObject();
 	var border = firstVisibleBorder(selectedLayer);
@@ -68,7 +67,7 @@ var selectSameBorderThickness = function(context)
 var selectSameFont = function(context)
 {
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, false)) return;
 	
 	var selectedLayer = context.selection.firstObject();
 	
@@ -86,7 +85,7 @@ var selectSameOpacity = function(context)
 	var selectedLayer = context.selection.firstObject();
 	
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, true)) return;
 	
 	iterateThroughLayers(context, selectedLayer, selectIfSameOpacity);
 }
@@ -96,7 +95,7 @@ var selectSameBlendMode = function(context)
 	var selectedLayer = context.selection.firstObject();
 	
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, true)) return;
 	
 	iterateThroughLayers(context, selectedLayer, selectIfSameBlendMode);
 }
@@ -106,7 +105,7 @@ var selectSameLayerName = function(context)
 	var selectedLayer = context.selection.firstObject();
 	
 	// Error handling
-	if(!selectionErrorHandling(context)) return;
+	if(!selectionErrorHandling(context, true)) return;
 	
 	iterateThroughLayers(context, selectedLayer, selectIfSameLayerName);
 }
@@ -117,6 +116,10 @@ var selectSameLayerName = function(context)
 
 var selectIfSameFill = function(layer, selectedLayer)
 {
+	if([layer class] == MSLayerGroup) {
+		return;
+	}
+	
 	for (var j = 0; j < selectedLayer.style().fills().count(); j++) {
 		var fill = selectedLayer.style().fills().objectAtIndex(j)
 		var shouldSelect = false;
@@ -190,6 +193,10 @@ var compareGradients = function(gradient1, gradient2) {
 
 var selectIfSameBorder = function(layer, selectedLayer)
 {
+	if([layer class] == MSLayerGroup) {
+		return;
+	}
+	
 	var color = firstVisibleBorder(selectedLayer).color();
 	
 	if(layer.style().borders().count() > 0) // If layer has at least one border
@@ -209,6 +216,10 @@ var selectIfSameBorder = function(layer, selectedLayer)
 
 var selectIfSameBorderThickness = function(layer, selectedLayer)
 {
+	if([layer class] == MSLayerGroup) {
+		return;
+	}
+	
 	var thickness = firstVisibleBorder(selectedLayer).thickness();
 	
 	if(layer.style().borders().count() > 0) // If layer has at least one border
@@ -228,6 +239,10 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 
 var selectIfSameFontAndSize = function(layer, selectedLayer)
 {
+	if([layer class] == MSLayerGroup) {
+		return;
+	}
+	
 	if([layer class] == MSTextLayer)
 	{
 		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
@@ -298,7 +313,7 @@ var iterateThroughLayers = function(context, attr, callback)
 	}
 }
 
-var handleObject = function(obj, color, fn)
+var handleObject = function(obj, attr, fn)
 {
 // 	log("handle object: "+[obj class]);
 	
@@ -309,11 +324,16 @@ var handleObject = function(obj, color, fn)
 	
 	// Is it a group?
 	if([obj class] == MSLayerGroup) {
+		
+		// Call the function on the group itself
+		var sif = fn.call(sif, obj, attr);
+		
+		// Call the function on each of the group inside the layers
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
 			layer = obj.layers().objectAtIndex(i);
 			
-			handleObject(layer, color, fn);
+			handleObject(layer, attr, fn);
 		}
 		return;
 	}
@@ -324,14 +344,14 @@ var handleObject = function(obj, color, fn)
 		{
 			layer = obj.layers().objectAtIndex(i);
 			
-			handleObject(layer, color, fn);
+			handleObject(layer, attr, fn);
 		}
 		return;
 	}
 	
 	
 // 	log("	A shape layer");
-	var sif = fn.call(sif, obj, color);
+	var sif = fn.call(sif, obj, attr);
 }
 
 var firstVisibleFill = function(layer)
@@ -362,7 +382,7 @@ var firstVisibleBorder = function(layer)
 	return false;
 }
 
-var selectionErrorHandling = function(context)
+var selectionErrorHandling = function(context, groupsAllowed)
 {
 	if(context.selection.count() == 0) // Nothing selected
 	{
@@ -378,7 +398,7 @@ var selectionErrorHandling = function(context)
 	
 	
 	var firstObject = context.selection.firstObject();
-	if([firstObject class] == MSLayerGroup) // Group selected
+	if([firstObject class] == MSLayerGroup && groupsAllowed == false) // Group selected
 	{
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with groups. Please select a layer instead." withTitle:"You've selected a group!"];
 		return false;
