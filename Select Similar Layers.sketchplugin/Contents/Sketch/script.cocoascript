@@ -5,6 +5,7 @@
 var debugMode = false;
 
 var selectInAllArtboards = true;
+var itemsMatched = 0;
 
 var debugLog = function(msg) {
 	if (debugMode) {
@@ -163,6 +164,7 @@ var selectIfSameFill = function(layer, selectedLayer)
 
 				if (shouldSelect) {
 					[layer select:true byExpandingSelection:true];
+					itemsMatched++;
 				}
 			}
 		}
@@ -211,9 +213,9 @@ var selectIfSameBorder = function(layer, selectedLayer)
 			if(border.color().isEqual(color) && border.isEnabled())
 			{
 				[layer select:true byExpandingSelection:true];
+				itemsMatched++;
 			}
 		}
-
 	}
 }
 
@@ -234,6 +236,7 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 			&& layer.isVisible())
 			{
 				[layer select:true byExpandingSelection:true];
+				itemsMatched++;
 			}
 		}
 
@@ -253,6 +256,7 @@ var selectIfSameFontAndSize = function(layer, selectedLayer)
 			&& layer.isVisible())
 		{
 			[layer select:true byExpandingSelection:true];
+			itemsMatched++;
 		}
 	}
 }
@@ -263,6 +267,7 @@ var selectIfSameOpacity = function(layer, selectedLayer)
 	&& layer.isVisible())
 	{
 		[layer select:true byExpandingSelection:true];
+		itemsMatched++;
 	}
 }
 
@@ -272,6 +277,7 @@ var selectIfSameBlendMode = function(layer, selectedLayer)
 	&& layer.isVisible())
 	{
 		[layer select:true byExpandingSelection:true];
+		itemsMatched++;
 	}
 }
 
@@ -280,7 +286,7 @@ var selectIfSameLayerName = function(layer, selectedLayer)
 	if([selectedLayer name] == [layer name])
 	{
 		[layer select:true byExpandingSelection:true];
-		return
+		itemsMatched++;
 	}
 }
 
@@ -308,6 +314,7 @@ var iterateThroughLayers = function(context, attr, callback)
 			handleObject(layer, attr, callback);
 		}
 	}
+	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " slected"];
 }
 
 var handleObject = function(obj, attr, fn)
