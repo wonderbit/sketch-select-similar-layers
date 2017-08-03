@@ -111,6 +111,16 @@ var selectSameLayerName = function(context)
 	iterateThroughLayers(context, selectedLayer, selectIfSameLayerName);
 }
 
+var selectSameLayerNameAndClass = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+
+	// Error handling
+	if(!selectionErrorHandling(context, true)) return;
+
+	iterateThroughLayers(context, selectedLayer, selectIfSameLayerNameAndClass);
+}
+
 /***********************/
 /** Callback functions */
 /***********************/
@@ -286,6 +296,16 @@ var selectIfSameLayerName = function(layer, selectedLayer)
 	// add by Thierryc
 	if([selectedLayer name].localeCompare([layer name]) == 0) {
 		debugLog("* Same name ");
+		[layer select:true byExpandingSelection:true];
+		itemsMatched++;
+	}
+}
+
+var selectIfSameLayerNameAndClass = function(layer, selectedLayer)
+{
+	// add by Thierryc
+	if([selectedLayer class] == [layer class] && [selectedLayer name].localeCompare([layer name]) == 0) {
+		debugLog("* Same name and class");
 		[layer select:true byExpandingSelection:true];
 		itemsMatched++;
 	}
