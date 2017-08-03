@@ -283,8 +283,9 @@ var selectIfSameBlendMode = function(layer, selectedLayer)
 
 var selectIfSameLayerName = function(layer, selectedLayer)
 {
-	if([selectedLayer name] == [layer name])
-	{
+	// add by Thierryc
+	if([selectedLayer name].localeCompare([layer name]) == 0) {
+		debugLog("* Same name ");
 		[layer select:true byExpandingSelection:true];
 		itemsMatched++;
 	}
@@ -306,6 +307,7 @@ var iterateThroughLayers = function(context, attr, callback)
 	{
 		for (var j = 0; j < page.layers().count(); j++) {
 			var layer = page.layers().objectAtIndex(j);
+
 			handleObject(layer, attr, callback);
 		}
 	} else {
@@ -314,25 +316,46 @@ var iterateThroughLayers = function(context, attr, callback)
 			handleObject(layer, attr, callback);
 		}
 	}
+	// add by Thierryc
 	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " slected"];
 }
 
 var handleObject = function(obj, attr, fn)
 {
 
-	debugLog("handle object: "+ [obj class]);
+	//debugLog("handle object: "+ [obj class]);
 
-	// Is it a slice?
+	// Is it a slice? ignore it
 	if([obj class] == MSSliceLayer) {
 		return;
 	}
+
+	// MSArtboardGroup √
+	// MSShapeGroup
+	// MSLayerGroup √
+	// MSTextLayer
+	// MSBitmapLayer
+	// MSSymbolInstance
 
 	// Is it a group?
 	if([obj class] == MSLayerGroup) {
 
 		// Call the function on the group itself
-		var sif = fn.call(sif, obj, attr);
+		fn.call(this, obj, attr);
+		// Call the function on each of the group inside the layers
+		for(var i = 0; i < obj.layers().count(); i++)
+		{
+			layer = obj.layers().objectAtIndex(i);
+			handleObject(layer, attr, fn);
+		}
+		return;
+	}
 
+	// Is it a MSShapeGroup?
+	if([obj class] == MSShapeGroup) {
+
+		// Call the function on the group itself
+		fn.call(this, obj, attr);
 		// Call the function on each of the group inside the layers
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
@@ -344,6 +367,9 @@ var handleObject = function(obj, attr, fn)
 
 	// Is it an artboard?
 	if([obj class] == MSArtboardGroup) {
+		// Call the function on the group itself
+		fn.call(this, obj, attr);
+		// Call the function on each of the group inside the layers
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
 			layer = obj.layers().objectAtIndex(i);
@@ -352,8 +378,12 @@ var handleObject = function(obj, attr, fn)
 		return;
 	}
 
-	// Is it an MSSymbolMaster?
+	// add by Thierryc 
+	// Is it an MSSymbolMaster ? for page symbol.
 	if([obj class] == MSSymbolMaster) {
+		// Call the function on the group itself
+		fn.call(this, obj, attr);
+		// Call the function on each of the group inside the layers
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
 			layer = obj.layers().objectAtIndex(i);
@@ -362,7 +392,8 @@ var handleObject = function(obj, attr, fn)
 		return;
 	}
 
-	var sif = fn.call(sif, obj, attr);
+	// debugLog("handle object: "+ [obj class]);
+	fn.call(this, obj, attr);
 }
 
 var firstVisibleFill = function(layer)
