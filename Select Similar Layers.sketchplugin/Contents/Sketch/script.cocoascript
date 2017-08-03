@@ -378,7 +378,7 @@ var handleObject = function(obj, attr, fn)
 		return;
 	}
 
-	// add by Thierryc 
+	// add by Thierryc
 	// Is it an MSSymbolMaster ? for page symbol.
 	if([obj class] == MSSymbolMaster) {
 		// Call the function on the group itself
