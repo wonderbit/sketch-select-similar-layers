@@ -5,6 +5,7 @@
 var debugMode = false;
 
 var selectInAllArtboards = true;
+var itemsMatched = 0;
 
 var debugLog = function(msg) {
 	if (debugMode) {
@@ -16,16 +17,16 @@ var selectSameFill = function(context)
 {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
-	
+
 	var selectedLayer = context.selection.firstObject();
 	var fill = firstVisibleFill(selectedLayer);
-	
+
 	if(!fill) // Does the layer have any visible fills?
 	{
 		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one fill and try again." withTitle:"No visible fills"];
 		return;
 	}
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameFill);
 
 }
@@ -34,16 +35,16 @@ var selectSameBorder = function(context)
 {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
-	
+
 	var selectedLayer = context.selection.firstObject();
 	var border = firstVisibleBorder(selectedLayer);
-	
+
 	if(!border) // Does the layer have any visible borders?
 	{
 		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
 		return;
 	}
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameBorder);
 }
 
@@ -51,16 +52,16 @@ var selectSameBorderThickness = function(context)
 {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
-	
+
 	var selectedLayer = context.selection.firstObject();
 	var border = firstVisibleBorder(selectedLayer);
-	
+
 	if(!border) // Does the layer have any visible borders?
 	{
 		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
 		return;
 	}
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameBorderThickness);
 }
 
@@ -68,46 +69,56 @@ var selectSameFont = function(context)
 {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
-	
+
 	var selectedLayer = context.selection.firstObject();
-	
+
 	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
 	{
 		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
 		return;
 	}
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameFontAndSize);
 }
 
 var selectSameOpacity = function(context)
 {
 	var selectedLayer = context.selection.firstObject();
-	
+
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameOpacity);
 }
 
 var selectSameBlendMode = function(context)
 {
 	var selectedLayer = context.selection.firstObject();
-	
+
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameBlendMode);
 }
 
 var selectSameLayerName = function(context)
 {
 	var selectedLayer = context.selection.firstObject();
-	
+
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
-	
+
 	iterateThroughLayers(context, selectedLayer, selectIfSameLayerName);
+}
+
+var selectSameLayerNameAndClass = function(context)
+{
+	var selectedLayer = context.selection.firstObject();
+
+	// Error handling
+	if(!selectionErrorHandling(context, true)) return;
+
+	iterateThroughLayers(context, selectedLayer, selectIfSameLayerNameAndClass);
 }
 
 /***********************/
@@ -119,22 +130,22 @@ var selectIfSameFill = function(layer, selectedLayer)
 	if([layer class] == MSLayerGroup) {
 		return;
 	}
-	
+
 	for (var j = 0; j < selectedLayer.style().fills().count(); j++) {
 		var fill = selectedLayer.style().fills().objectAtIndex(j)
 		var shouldSelect = false;
-		
+
 		// debugLog("Selected layer is enabled: " + fill.isEnabled());
 		// debugLog("Selected layer color: " + fill.color());
 		// debugLog("Selected layer fill type: " + fill.fillType());
 		// debugLog("Selected layer gradient type: " + fill.gradient().gradientType());
 		// debugLog("Selected layer noise pattern: " + fill.noiseIndex());
-		
+
 		if (fill.isEnabled()) {
 			for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
 			{
 				var thisFill = layer.style().fills().objectAtIndex(i)
-			
+
 				if (thisFill.fillType() == fill.fillType()
 				&& thisFill.isEnabled()
 				&& layer.isVisible()) {
@@ -160,9 +171,10 @@ var selectIfSameFill = function(layer, selectedLayer)
 						}
 					}
 				}
-			
+
 				if (shouldSelect) {
 					[layer select:true byExpandingSelection:true];
+					itemsMatched++;
 				}
 			}
 		}
@@ -173,20 +185,20 @@ var compareGradients = function(gradient1, gradient2) {
 	if(gradient1.gradientType() != gradient2.gradientType()) {
 		debugLog("different gradient types");
 		return false;
-	} 
-	
+	}
+
 	if(gradient1.stops().count() != gradient2.stops().count()) {
 		debugLog("different stop counts");
 		return false;
 	}
-	
+
 	for(var i = 0; i < gradient1.stops().count(); i++) {
 		if(!gradient1.stops().objectAtIndex(i).color().isEqual(gradient2.stops().objectAtIndex(i).color())) {
 			debugLog("different color at stop number "+i);
 			return false;
 		}
 	}
-	
+
 	debugLog("gradients are equal");
 	return true;
 }
@@ -196,21 +208,24 @@ var selectIfSameBorder = function(layer, selectedLayer)
 	if([layer class] == MSLayerGroup) {
 		return;
 	}
-	
+	// TODO: add to an option ?
+	if(!layer.isVisible()) {
+		return;
+	}
+
 	var color = firstVisibleBorder(selectedLayer).color();
-	
+
 	if(layer.style().borders().count() > 0) // If layer has at least one border
 	{
 		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
 		{
-			if(layer.style().borders().objectAtIndex(i).color().isEqual(color)
-			&& layer.style().borders().objectAtIndex(i).isEnabled()
-			&& layer.isVisible())
+			var border = layer.style().borders().objectAtIndex(i);
+			if(border.color().isEqual(color) && border.isEnabled())
 			{
 				[layer select:true byExpandingSelection:true];
+				itemsMatched++;
 			}
 		}
-		
 	}
 }
 
@@ -219,9 +234,9 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 	if([layer class] == MSLayerGroup) {
 		return;
 	}
-	
+
 	var thickness = firstVisibleBorder(selectedLayer).thickness();
-	
+
 	if(layer.style().borders().count() > 0) // If layer has at least one border
 	{
 		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
@@ -231,9 +246,10 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 			&& layer.isVisible())
 			{
 				[layer select:true byExpandingSelection:true];
+				itemsMatched++;
 			}
 		}
-	
+
 	}
 }
 
@@ -242,7 +258,7 @@ var selectIfSameFontAndSize = function(layer, selectedLayer)
 	if([layer class] == MSLayerGroup) {
 		return;
 	}
-	
+
 	if([layer class] == MSTextLayer)
 	{
 		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
@@ -250,6 +266,7 @@ var selectIfSameFontAndSize = function(layer, selectedLayer)
 			&& layer.isVisible())
 		{
 			[layer select:true byExpandingSelection:true];
+			itemsMatched++;
 		}
 	}
 }
@@ -260,6 +277,7 @@ var selectIfSameOpacity = function(layer, selectedLayer)
 	&& layer.isVisible())
 	{
 		[layer select:true byExpandingSelection:true];
+		itemsMatched++;
 	}
 }
 
@@ -269,15 +287,27 @@ var selectIfSameBlendMode = function(layer, selectedLayer)
 	&& layer.isVisible())
 	{
 		[layer select:true byExpandingSelection:true];
+		itemsMatched++;
 	}
 }
 
 var selectIfSameLayerName = function(layer, selectedLayer)
 {
-	if([selectedLayer name] == [layer name])
-	{
+	// add by Thierryc
+	if([selectedLayer name].localeCompare([layer name]) == 0) {
+		debugLog("* Same name ");
 		[layer select:true byExpandingSelection:true];
-		return
+		itemsMatched++;
+	}
+}
+
+var selectIfSameLayerNameAndClass = function(layer, selectedLayer)
+{
+	// add by Thierryc
+	if([selectedLayer class] == [layer class] && [selectedLayer name].localeCompare([layer name]) == 0) {
+		debugLog("* Same name and class");
+		[layer select:true byExpandingSelection:true];
+		itemsMatched++;
 	}
 }
 
@@ -290,68 +320,100 @@ var iterateThroughLayers = function(context, attr, callback)
 	var doc = context.document;
 	var page = doc.currentPage();
 	var artboard = page.currentArtboard(); // if selected object is not inside of an artboard, this will be null.
-	
-	debugLog("Objects on page: "+page.layers().count());
-	
+
+	debugLog("Objects on page: " + page.layers().count());
+
 	if(selectInAllArtboards || !artboard)
 	{
 		for (var j = 0; j < page.layers().count(); j++) {
 			var layer = page.layers().objectAtIndex(j);
-			
+
 			handleObject(layer, attr, callback);
-			
 		}
-	}
-	else
-	{
+	} else {
 		for (var k = 0; k < artboard.layers().count(); k++) {
 			var layer = artboard.layers().objectAtIndex(k);
-
 			handleObject(layer, attr, callback);
-
 		}
 	}
+	// add by Thierryc
+	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " slected"];
 }
 
 var handleObject = function(obj, attr, fn)
 {
-// 	log("handle object: "+[obj class]);
-	
-	// Is it a slice?
+
+	//debugLog("handle object: "+ [obj class]);
+
+	// Is it a slice? ignore it
 	if([obj class] == MSSliceLayer) {
 		return;
 	}
-	
+
+	// MSArtboardGroup √
+	// MSShapeGroup
+	// MSLayerGroup √
+	// MSTextLayer
+	// MSBitmapLayer
+	// MSSymbolInstance
+
 	// Is it a group?
 	if([obj class] == MSLayerGroup) {
-		
+
 		// Call the function on the group itself
-		var sif = fn.call(sif, obj, attr);
-		
+		fn.call(this, obj, attr);
 		// Call the function on each of the group inside the layers
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
 			layer = obj.layers().objectAtIndex(i);
-			
 			handleObject(layer, attr, fn);
 		}
 		return;
 	}
-	
-	// Is it an artboard?
-	if([obj class] == MSArtboardGroup) {
+
+	// Is it a MSShapeGroup?
+	if([obj class] == MSShapeGroup) {
+
+		// Call the function on the group itself
+		fn.call(this, obj, attr);
+		// Call the function on each of the group inside the layers
 		for(var i = 0; i < obj.layers().count(); i++)
 		{
 			layer = obj.layers().objectAtIndex(i);
-			
 			handleObject(layer, attr, fn);
 		}
 		return;
 	}
-	
-	
-// 	log("	A shape layer");
-	var sif = fn.call(sif, obj, attr);
+
+	// Is it an artboard?
+	if([obj class] == MSArtboardGroup) {
+		// Call the function on the group itself
+		fn.call(this, obj, attr);
+		// Call the function on each of the group inside the layers
+		for(var i = 0; i < obj.layers().count(); i++)
+		{
+			layer = obj.layers().objectAtIndex(i);
+			handleObject(layer, attr, fn);
+		}
+		return;
+	}
+
+	// add by Thierryc
+	// Is it an MSSymbolMaster ? for page symbol.
+	if([obj class] == MSSymbolMaster) {
+		// Call the function on the group itself
+		fn.call(this, obj, attr);
+		// Call the function on each of the group inside the layers
+		for(var i = 0; i < obj.layers().count(); i++)
+		{
+			layer = obj.layers().objectAtIndex(i);
+			handleObject(layer, attr, fn);
+		}
+		return;
+	}
+
+	// debugLog("handle object: "+ [obj class]);
+	fn.call(this, obj, attr);
 }
 
 var firstVisibleFill = function(layer)
@@ -364,7 +426,7 @@ var firstVisibleFill = function(layer)
 			return fill;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -378,7 +440,7 @@ var firstVisibleBorder = function(layer)
 			return border;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -389,26 +451,26 @@ var selectionErrorHandling = function(context, groupsAllowed)
 		[[NSApplication sharedApplication] displayDialog:"You must select a layer in order to use this plugin." withTitle:"No layers selected!"];
 		return false;
 	}
-	
+
 	if(context.selection.count() > 1) // More than one layer selected
 	{
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with multiple layers. Please select a single layer and try again." withTitle:"Multiple layers selected!"];
 		return false;
 	}
-	
-	
+
+
 	var firstObject = context.selection.firstObject();
 	if([firstObject class] == MSLayerGroup && groupsAllowed == false) // Group selected
 	{
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with groups. Please select a layer instead." withTitle:"You've selected a group!"];
 		return false;
 	}
-	
+
 	if([firstObject class] == MSSliceLayer) // Slice selected
 	{
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with slices. Please select a layer instead." withTitle:"You've selected a slice!"];
 		return false;
 	}
-	
+
 	return true;
 }

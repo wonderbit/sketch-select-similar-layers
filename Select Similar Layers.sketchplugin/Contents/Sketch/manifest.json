@@ -43,12 +43,19 @@
       "name" : "Blend Mode",
       "identifier" : "selectSameBlendMode"
     },
-	{
+  {
       "script" : "script.cocoascript",
       "handler" : "selectSameLayerName",
       "shortcut" : "ctrl alt 7",
       "name" : "Name",
       "identifier" : "selectSameLayerName"
+    },
+  {
+        "script" : "script.cocoascript",
+        "handler" : "selectSameLayerNameAndClass",
+        "shortcut" : "ctrl alt 8",
+        "name" : "Name and Class (type)",
+        "identifier" : "selectSameLayerNameAndClass"
     }
   ],
   "menu": {
@@ -59,11 +66,12 @@
 	  "selectSameBorderThickness",
 	  "selectSameOpacity",
 	  "selectSameBlendMode",
-	  "selectSameLayerName"
+	  "selectSameLayerName",
+    "selectSameLayerNameAndClass"
     ]
   },
   "identifier" : "me.wessley.selectSimilarLayers",
-  "version" : "1.1",
+  "version" : "1.4",
   "description" : "A plugin that selects layers with similar attributes to those of the layer currently selected.",
   "authorEmail" : "wessley@mac.com",
   "name" : "Select Similar Layers"
