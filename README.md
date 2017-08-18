@@ -11,8 +11,8 @@ Just select a layer and hit:
 - **⌃⌥4 (ctrl+alt+4)** to select text layers with the same **font and size**.
 - **⌃⌥5 (ctrl+alt+5)** to select layers and groups with the same **opacity**.
 - **⌃⌥6 (ctrl+alt+6)** to select layers and groups with the same **blending mode**.
-- **⌃⌥7 (ctrl+alt+7** to select layers and groups with the same **name**.
-- **⌃⌥8 (ctrl+alt+8** to select layers and groups with the same **name** and **class** (type).
+- **⌃⌥7 (ctrl+alt+7)** to select layers and groups with the same **name**.
+- **⌃⌥8 (ctrl+alt+8)** to select layers and groups with the same **name** and **class** (type).
 
 ### Installation
 1. Download and unzip [Select Similar Layers](https://github.com/wonderbit/sketch-select-similar-layers/archive/master.zip)
