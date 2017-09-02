@@ -32,7 +32,6 @@
   {
         "script" : "script.cocoascript",
         "handler" : "selectSameFontAndColor",
-        "shortcut" : "ctrl shift alt 4",
         "name" : "Font and Color",
         "identifier" : "selectSameFontAndColor"
       },
