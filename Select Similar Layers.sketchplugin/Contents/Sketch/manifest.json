@@ -29,6 +29,13 @@
       "name" : "Font",
       "identifier" : "selectSameFont"
     },
+  {
+        "script" : "script.cocoascript",
+        "handler" : "selectSameFontAndColor",
+        "shortcut" : "ctrl sift alt 4",
+        "name" : "Font and Color",
+        "identifier" : "selectSameFontAndColor"
+      },
 	{
       "script" : "script.cocoascript",
       "handler" : "selectSameOpacity",

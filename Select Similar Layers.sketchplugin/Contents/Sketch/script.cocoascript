@@ -80,6 +80,20 @@ var selectSameFont = function(context)
 	iterateThroughLayers(context, selectedLayer, selectIfSameFontAndSize);
 }
 
+var selectSameFontAndColor = function(context)
+{
+	// Error handling
+	if(!selectionErrorHandling(context, false)) return;
+
+	var selectedLayer = context.selection.firstObject();
+	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
+		return;
+	}
+	iterateThroughLayers(context, selectedLayer, selectIfSameFontSizeAndColor);
+}
+
 var selectSameOpacity = function(context)
 {
 	var selectedLayer = context.selection.firstObject();
@@ -126,7 +140,7 @@ var selectSameLayerNameAndClass = function(context)
 
 var selectIfSameFill = function(layer, selectedLayer)
 {
-	if(typeof layer.style == "undefined" || typeof layer.style().fills == "undefined") { //  Replace type by features [layer class] == MSLayerGroup ||
+	if(typeof layer.style == "undefined" || typeof layer.style().fills == "undefined") { //  Replace type by features [layer class] == MSLayerGroup
 		return;
 	}
 
@@ -208,7 +222,7 @@ var compareGradients = function(gradient1, gradient2) {
 var selectIfSameBorder = function(layer, selectedLayer)
 {
 
-	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") { //  Replace type by features [layer class] == MSLayerGroup ||
+	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") { //  Replace type by features [layer class] == MSLayerGroup
 		return;
 	}
 
@@ -268,17 +282,33 @@ var selectIfSameFontAndSize = function(layer, selectedLayer)
 {
 	if([layer class] == MSTextLayer)
 	{
+		if(
+			layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
+			&& layer.fontSize() == selectedLayer.fontSize()
+			&& layer.isVisible()
+      )
+		{
+			[layer select:true byExpandingSelection:true];
+			itemsMatched++;
+		}
+	}
+}
+
+var selectIfSameFontSizeAndColor = function(layer, selectedLayer)
+{
+	if([layer class] == MSTextLayer)
+	{
         //rgb and alpha paring for the font color in the layer
-        var layerFontColor = [layer.textColor().toString().substring(3,12), // Red Color parsing
-                              layer.textColor().toString().substring(14,22),  // Green Color parsing
-                              layer.textColor().toString().substring(25,33),  // Blue Color parsing
-                              layer.textColor().toString().substring(36,44)]  // Alpha Color parsing
-        
-        //rgb and alpha paring for the font color in the selectedLayerFontColor
-        var selectedLayerFontColor = [selectedLayer.textColor().toString().substring(3,12), // Red Color parsing
-                                      selectedLayer.textColor().toString().substring(14,22), // Green Color parsing
-                                      selectedLayer.textColor().toString().substring(25,33), // Blue Color parsing
-                                      selectedLayer.textColor().toString().substring(36,44)] // Alpha Color parsing
+    var layerFontColor = [layer.textColor().toString().substring(3,12), // Red Color parsing
+                          layer.textColor().toString().substring(14,22),  // Green Color parsing
+                          layer.textColor().toString().substring(25,33),  // Blue Color parsing
+                          layer.textColor().toString().substring(36,44)]  // Alpha Color parsing
+
+    //rgb and alpha paring for the font color in the selectedLayerFontColor
+    var selectedLayerFontColor = [selectedLayer.textColor().toString().substring(3,12), // Red Color parsing
+                                  selectedLayer.textColor().toString().substring(14,22), // Green Color parsing
+                                  selectedLayer.textColor().toString().substring(25,33), // Blue Color parsing
+                                  selectedLayer.textColor().toString().substring(36,44)] // Alpha Color parsing
 
 		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
 			&& layer.fontSize() == selectedLayer.fontSize()
