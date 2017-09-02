@@ -71,7 +71,6 @@ var selectSameFont = function(context)
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
-
 	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
 	{
 		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
@@ -267,12 +266,28 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 
 var selectIfSameFontAndSize = function(layer, selectedLayer)
 {
-
 	if([layer class] == MSTextLayer)
 	{
+        //rgb and alpha paring for the font color in the layer
+        var layerFontColor = [layer.textColor().toString().substring(3,12), // Red Color parsing
+                              layer.textColor().toString().substring(14,22),  // Green Color parsing
+                              layer.textColor().toString().substring(25,33),  // Blue Color parsing
+                              layer.textColor().toString().substring(36,44)]  // Alpha Color parsing
+        
+        //rgb and alpha paring for the font color in the selectedLayerFontColor
+        var selectedLayerFontColor = [selectedLayer.textColor().toString().substring(3,12), // Red Color parsing
+                                      selectedLayer.textColor().toString().substring(14,22), // Green Color parsing
+                                      selectedLayer.textColor().toString().substring(25,33), // Blue Color parsing
+                                      selectedLayer.textColor().toString().substring(36,44)] // Alpha Color parsing
+
 		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
 			&& layer.fontSize() == selectedLayer.fontSize()
-			&& layer.isVisible())
+			&& layerFontColor[0] == selectedLayerFontColor[0]
+			&& layerFontColor[1] == selectedLayerFontColor[1]
+			&& layerFontColor[2] == selectedLayerFontColor[2]
+			&& layerFontColor[3] == selectedLayerFontColor[3]
+			&& layer.isVisible()
+            )
 		{
 			[layer select:true byExpandingSelection:true];
 			itemsMatched++;
