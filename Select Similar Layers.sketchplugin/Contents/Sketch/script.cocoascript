@@ -2,6 +2,11 @@
 // TODO: Select same symbols
 // TODO: Select layers with the same shared style
 
+/*
+// defaults write ~/Library/Preferences/com.bohemiancoding.sketch3.plist AlwaysReloadScript -bool YES
+// defaults write ~/Library/Preferences/com.bohemiancoding.sketch3.plist AlwaysReloadScript -bool NO
+*/
+
 var debugMode = false;
 
 var selectInAllArtboards = true;
@@ -71,7 +76,6 @@ var selectSameFont = function(context)
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
-
 	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
 	{
 		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
@@ -79,6 +83,20 @@ var selectSameFont = function(context)
 	}
 
 	iterateThroughLayers(context, selectedLayer, selectIfSameFontAndSize);
+}
+
+var selectSameFontAndColor = function(context)
+{
+	// Error handling
+	if(!selectionErrorHandling(context, false)) return;
+
+	var selectedLayer = context.selection.firstObject();
+	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
+	{
+		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
+		return;
+	}
+	iterateThroughLayers(context, selectedLayer, selectIfSameFontSizeAndColor);
 }
 
 var selectSameOpacity = function(context)
@@ -127,7 +145,7 @@ var selectSameLayerNameAndClass = function(context)
 
 var selectIfSameFill = function(layer, selectedLayer)
 {
-	if([layer class] == MSLayerGroup) {
+	if(typeof layer.style == "undefined" || typeof layer.style().fills == "undefined") { //  Replace type by features [layer class] == MSLayerGroup
 		return;
 	}
 
@@ -140,6 +158,9 @@ var selectIfSameFill = function(layer, selectedLayer)
 		// debugLog("Selected layer fill type: " + fill.fillType());
 		// debugLog("Selected layer gradient type: " + fill.gradient().gradientType());
 		// debugLog("Selected layer noise pattern: " + fill.noiseIndex());
+
+		//debugLog("layer: " + [layer class]);
+		//debugLog("layer.style ? " + layer.style());
 
 		if (fill.isEnabled()) {
 			for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
@@ -205,9 +226,11 @@ var compareGradients = function(gradient1, gradient2) {
 
 var selectIfSameBorder = function(layer, selectedLayer)
 {
-	if([layer class] == MSLayerGroup) {
+
+	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") { //  Replace type by features [layer class] == MSLayerGroup
 		return;
 	}
+
 	// TODO: add to an option ?
 	if(!layer.isVisible()) {
 		return;
@@ -231,7 +254,14 @@ var selectIfSameBorder = function(layer, selectedLayer)
 
 var selectIfSameBorderThickness = function(layer, selectedLayer)
 {
+
+	/**
 	if([layer class] == MSLayerGroup) {
+		return;
+	}
+	**/
+
+	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") { //  Replace type by features [layer class] == MSLayerGroup ||
 		return;
 	}
 
@@ -255,15 +285,44 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 
 var selectIfSameFontAndSize = function(layer, selectedLayer)
 {
-	if([layer class] == MSLayerGroup) {
-		return;
-	}
-
 	if([layer class] == MSTextLayer)
 	{
+		if(
+			layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
+			&& layer.fontSize() == selectedLayer.fontSize()
+			&& layer.isVisible()
+      )
+		{
+			[layer select:true byExpandingSelection:true];
+			itemsMatched++;
+		}
+	}
+}
+
+var selectIfSameFontSizeAndColor = function(layer, selectedLayer)
+{
+	if([layer class] == MSTextLayer)
+	{
+        //rgb and alpha paring for the font color in the layer
+    var layerFontColor = [layer.textColor().toString().substring(3,12), // Red Color parsing
+                          layer.textColor().toString().substring(14,22),  // Green Color parsing
+                          layer.textColor().toString().substring(25,33),  // Blue Color parsing
+                          layer.textColor().toString().substring(36,44)]  // Alpha Color parsing
+
+    //rgb and alpha paring for the font color in the selectedLayerFontColor
+    var selectedLayerFontColor = [selectedLayer.textColor().toString().substring(3,12), // Red Color parsing
+                                  selectedLayer.textColor().toString().substring(14,22), // Green Color parsing
+                                  selectedLayer.textColor().toString().substring(25,33), // Blue Color parsing
+                                  selectedLayer.textColor().toString().substring(36,44)] // Alpha Color parsing
+
 		if(layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
 			&& layer.fontSize() == selectedLayer.fontSize()
-			&& layer.isVisible())
+			&& layerFontColor[0] == selectedLayerFontColor[0]
+			&& layerFontColor[1] == selectedLayerFontColor[1]
+			&& layerFontColor[2] == selectedLayerFontColor[2]
+			&& layerFontColor[3] == selectedLayerFontColor[3]
+			&& layer.isVisible()
+            )
 		{
 			[layer select:true byExpandingSelection:true];
 			itemsMatched++;
@@ -295,7 +354,7 @@ var selectIfSameLayerName = function(layer, selectedLayer)
 {
 	// add by Thierryc
 	if([selectedLayer name].localeCompare([layer name]) == 0) {
-		debugLog("* Same name ");
+		// debugLog("* Same name ");
 		[layer select:true byExpandingSelection:true];
 		itemsMatched++;
 	}
@@ -305,7 +364,7 @@ var selectIfSameLayerNameAndClass = function(layer, selectedLayer)
 {
 	// add by Thierryc
 	if([selectedLayer class] == [layer class] && [selectedLayer name].localeCompare([layer name]) == 0) {
-		debugLog("* Same name and class");
+		// debugLog("* Same name and class");
 		[layer select:true byExpandingSelection:true];
 		itemsMatched++;
 	}
@@ -418,6 +477,10 @@ var handleObject = function(obj, attr, fn)
 
 var firstVisibleFill = function(layer)
 {
+	if(typeof layer.style == "undefined" || typeof layer.style().fills == "undefined") {
+		return;
+	}
+
 	for(var i = 0; i < layer.style().fills().count(); i++)
 	{
 		var fill = layer.style().fills().objectAtIndex(i);
@@ -432,6 +495,10 @@ var firstVisibleFill = function(layer)
 
 var firstVisibleBorder = function(layer)
 {
+	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") {
+		return;
+	}
+
 	for(var i = 0; i < layer.style().borders().count(); i++)
 	{
 		var border = layer.style().borders().objectAtIndex(i);
