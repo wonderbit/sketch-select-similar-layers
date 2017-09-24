@@ -62,6 +62,13 @@
         "shortcut" : "ctrl alt 8",
         "name" : "Name and Class (type)",
         "identifier" : "selectSameLayerNameAndClass"
+    },
+  {
+        "script" : "script.cocoascript",
+        "handler" : "selectSameLayerClass",
+        "shortcut" : "ctrl alt 9",
+        "name" : "Class (type)",
+        "identifier" : "selectSameLayerClass"
     }
   ],
   "menu": {
@@ -74,7 +81,8 @@
 	  "selectSameOpacity",
 	  "selectSameBlendMode",
 	  "selectSameLayerName",
-    "selectSameLayerNameAndClass"
+    "selectSameLayerNameAndClass",
+    "selectSameLayerClass"
     ]
   },
   "identifier" : "me.wessley.selectSimilarLayers",
