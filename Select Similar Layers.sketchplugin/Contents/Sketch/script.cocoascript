@@ -139,7 +139,10 @@ var selectSameLayerNameAndClass = function(context)
 	iterateThroughLayers(context, selectedLayer, selectIfSameLayerNameAndClass);
 }
 
+<<<<<<< HEAD
 var selectSameLayerClass = function(context)
+=======
+>>>>>>> 3724327a96511071f92f3bbe8ecef452697ea408
 {
 	var selectedLayer = context.selection.firstObject();
 
