@@ -416,7 +416,7 @@ var iterateThroughLayers = function(context, attr, callback)
 		}
 	}
 	// add by Thierryc
-	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " slected"];
+	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " selected"];
 }
 
 var handleObject = function(obj, attr, fn)
