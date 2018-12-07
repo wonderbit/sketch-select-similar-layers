@@ -9,7 +9,7 @@
 
 var debugMode = false;
 
-var selectInAllArtboards = true;
+var selectInAllArtboards = false;
 var itemsMatched = 0;
 
 var debugLog = function(msg) {
