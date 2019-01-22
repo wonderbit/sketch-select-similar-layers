@@ -204,7 +204,7 @@ var selectIfSameFill = function(layer, selectedLayer)
 				}
 
 				if (shouldSelect) {
-					[layer select:true byExpandingSelection:true];
+					[layer select:true byExtendingSelection:true];
 					itemsMatched++;
 				}
 			}
@@ -255,7 +255,7 @@ var selectIfSameBorder = function(layer, selectedLayer)
 			var border = layer.style().borders().objectAtIndex(i);
 			if(border.color().isEqual(color) && border.isEnabled())
 			{
-				[layer select:true byExpandingSelection:true];
+				[layer select:true byExtendingSelection:true];
 				itemsMatched++;
 			}
 		}
@@ -285,7 +285,7 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 			&& layer.style().borders().objectAtIndex(i).isEnabled()
 			&& layer.isVisible())
 			{
-				[layer select:true byExpandingSelection:true];
+				[layer select:true byExtendingSelection:true];
 				itemsMatched++;
 			}
 		}
@@ -303,7 +303,7 @@ var selectIfSameFontAndSize = function(layer, selectedLayer)
 			&& layer.isVisible()
       )
 		{
-			[layer select:true byExpandingSelection:true];
+			[layer select:true byExtendingSelection:true];
 			itemsMatched++;
 		}
 	}
@@ -334,7 +334,7 @@ var selectIfSameFontSizeAndColor = function(layer, selectedLayer)
 			&& layer.isVisible()
             )
 		{
-			[layer select:true byExpandingSelection:true];
+			[layer select:true byExtendingSelection:true];
 			itemsMatched++;
 		}
 	}
@@ -345,7 +345,7 @@ var selectIfSameOpacity = function(layer, selectedLayer)
 	if(selectedLayer.style().contextSettings().opacity() == layer.style().contextSettings().opacity()
 	&& layer.isVisible())
 	{
-		[layer select:true byExpandingSelection:true];
+		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
@@ -355,7 +355,7 @@ var selectIfSameBlendMode = function(layer, selectedLayer)
 	if(selectedLayer.style().contextSettings().blendMode() == layer.style().contextSettings().blendMode()
 	&& layer.isVisible())
 	{
-		[layer select:true byExpandingSelection:true];
+		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
@@ -365,7 +365,7 @@ var selectIfSameLayerName = function(layer, selectedLayer)
 	// add by Thierryc
 	if([selectedLayer name].localeCompare([layer name]) == 0) {
 		// debugLog("* Same name ");
-		[layer select:true byExpandingSelection:true];
+		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
@@ -375,7 +375,7 @@ var selectIfSameLayerNameAndClass = function(layer, selectedLayer)
 	// add by Thierryc
 	if([selectedLayer class] == [layer class] && [selectedLayer name].localeCompare([layer name]) == 0) {
 		// debugLog("* Same name and class");
-		[layer select:true byExpandingSelection:true];
+		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
@@ -385,7 +385,7 @@ var selectIfSameLayerClass = function(layer, selectedLayer)
 	// add by seehadley
 	if([selectedLayer class] == [layer class]) {
 		// debugLog("* Same name and class");
-		[layer select:true byExpandingSelection:true];
+		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
