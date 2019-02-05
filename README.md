@@ -13,6 +13,18 @@ Just select a layer and hit:
 - **⌃⌥6 (ctrl+alt+6)** to select layers and groups with the same **blending mode**.
 - **⌃⌥7 (ctrl+alt+7)** to select layers and groups with the same **name**.
 - **⌃⌥8 (ctrl+alt+8)** to select layers and groups with the same **name** and **class** (type).
+- **⌃⌥9 (ctrl+alt+9)** to select layers and groups with the same **class** (type).
+
+To select similar layers in all your artboards use:
+- **⌃⌥⇧1 (ctrl+alt+shift+1)** to select layers with the same **fill color**.
+- **⌃⌥⇧2 (ctrl+alt+shift+2)** to select layers with the same **border color**.
+- **⌃⌥⇧3 (ctrl+alt+shift+3)** to select layers with the same **border thickness**.
+- **⌃⌥⇧4 (ctrl+alt+shift+4)** to select text layers with the same **font and size**.
+- **⌃⌥⇧5 (ctrl+alt+shift+5)** to select layers and groups with the same **opacity**.
+- **⌃⌥⇧6 (ctrl+alt+shift+6)** to select layers and groups with the same **blending mode**.
+- **⌃⌥⇧7 (ctrl+alt+shift+7)** to select layers and groups with the same **name**.
+- **⌃⌥⇧8 (ctrl+alt+shift+8)** to select layers and groups with the same **name** and **class** (type).
+- **⌃⌥⇧9 (ctrl+alt+shift+9)** to select layers and groups with the same **class** (type).
 
 ### Installation
 1. Download and unzip [Select Similar Layers](https://github.com/wonderbit/sketch-select-similar-layers/archive/master.zip)
