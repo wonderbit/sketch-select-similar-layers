@@ -18,6 +18,76 @@ var debugLog = function(msg) {
 	}
 }
 
+var selectSameFillInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameFill(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameBorderInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameBorder(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameBorderThicknessInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameBorderThickness(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameFontInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameFont(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameFontAndColorInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameFontAndColor(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameOpacityInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameOpacity(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameBlendModeInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameBlendMode(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameLayerNameInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameLayerName(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameLayerNameAndClassInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameLayerNameAndClass(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameLayerClassInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameLayerClass(context);
+	selectInAllArtboards = false;
+}
+
 var selectSameFill = function(context)
 {
 	// Error handling
