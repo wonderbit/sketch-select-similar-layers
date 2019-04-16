@@ -472,6 +472,17 @@ var iterateThroughLayers = function(context, attr, callback)
 
 	debugLog("Objects on page: " + page.layers().count());
 
+
+	// Is it hidden? ignore it
+	if(obj.hidden == true) {
+		return;
+	}
+
+	// Is it locked? ignore it
+	if(obj.locked == true) {
+		return;
+	}
+
 	if(selectInAllArtboards || !artboard)
 	{
 		for (var j = 0; j < page.layers().count(); j++) {
