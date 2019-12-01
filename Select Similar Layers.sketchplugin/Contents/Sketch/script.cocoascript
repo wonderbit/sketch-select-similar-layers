@@ -80,14 +80,14 @@ var selectSameLayerClassInAllArtboards = function(context)
 	selectInAllArtboards = false;
 }
 
-var selectSameInstanceInAllArtboards = function(context)
+var selectSameSymbolInAllArtboards = function(context)
 {
 	selectInAllArtboards = true;
-	selectSameInstance(context);
+	selectSameSymbol(context);
 	selectInAllArtboards = false;
 }
 
-var selectSameInstance = function(context)
+var selectSameSymbol = function(context)
 {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
@@ -99,7 +99,7 @@ var selectSameInstance = function(context)
 		return;
 	}
 	
-	iterateThroughLayers(context, selectedLayer, selectIfSameInstance);
+	iterateThroughLayers(context, selectedLayer, selectIfSameSymbol);
 }
 
 var selectSameFill = function(context)
@@ -474,7 +474,7 @@ var selectIfSameLayerClass = function(layer, selectedLayer)
 	}
 }
 
-var selectIfSameInstance = function(layer, selectedLayer)
+var selectIfSameSymbol = function(layer, selectedLayer)
 {
 	if ([layer class] == MSSymbolInstance) {
 		if ([selectedLayer symbolMaster] == [layer symbolMaster]) {
