@@ -7,8 +7,6 @@
 */
 
 var debugMode = false;
-
-var selectInAllArtboards = false;
 var itemsMatched = 0;
 
 var debugLog = function(msg) {
@@ -17,78 +15,91 @@ var debugLog = function(msg) {
 	}
 }
 
-var selectSameBorderInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameBorder(context);
-	selectInAllArtboards = false;
+// Select in Group
+
+var selectSameBorderInGroup = function(context) {
+	selectSameBorder(context, "group");
 }
 
-var selectSameBorderThicknessInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameBorderThickness(context);
-	selectInAllArtboards = false;
+var selectSameBorderThicknessInGroup = function(context) {
+	selectSameBorderThickness(context, "group");
 }
 
-var selectSameFontInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameFont(context);
-	selectInAllArtboards = false;
+var selectSameFontInGroup = function(context) {
+	selectSameFont(context, "group");
 }
 
-var selectSameFontAndColorInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameFontAndColor(context);
-	selectInAllArtboards = false;
+var selectSameFontAndColorInGroup = function(context) {
+	selectSameFontAndColor(context, "group");
 }
 
-var selectSameOpacityInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameOpacity(context);
-	selectInAllArtboards = false;
+var selectSameOpacityInGroup = function(context) {
+	selectSameOpacity(context, "group");
 }
 
-var selectSameBlendModeInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameBlendMode(context);
-	selectInAllArtboards = false;
+var selectSameBlendModeInGroup = function(context) {
+	selectSameBlendMode(context, "group");
 }
 
-var selectSameLayerNameInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameLayerName(context);
-	selectInAllArtboards = false;
+var selectSameLayerNameInGroup = function(context) {
+	selectSameLayerName(context, "group");
 }
 
-var selectSameLayerNameAndClassInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameLayerNameAndClass(context);
-	selectInAllArtboards = false;
+var selectSameLayerNameAndClassInGroup = function(context) {
+	selectSameLayerNameAndClass(context, "group");
 }
 
-var selectSameLayerClassInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameLayerClass(context);
-	selectInAllArtboards = false;
+var selectSameLayerClassInGroup = function(context) {
+	selectSameLayerClass(context, "group");
 }
 
-var selectSameSymbolInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameSymbol(context);
-	selectInAllArtboards = false;
+var selectSameSymbolInGroup = function(context) {
+	selectSameSymbol(context, "group");
 }
 
-var selectSameSymbol = function(context)
-{
+var selectSameBorderInPage = function(context) {
+	selectSameBorder(context, "page");
+}
+
+// Select in Page
+
+var selectSameBorderThicknessInPage = function(context) {
+	selectSameBorderThickness(context, "page");
+}
+
+var selectSameFontInPage = function(context) {
+	selectSameFont(context, "page");
+}
+
+var selectSameFontAndColorInPage = function(context) {
+	selectSameFontAndColor(context, "page");
+}
+
+var selectSameOpacityInPage = function(context) {
+	selectSameOpacity(context, "page");
+}
+
+var selectSameBlendModeInPage = function(context) {
+	selectSameBlendMode(context, "page");
+}
+
+var selectSameLayerNameInPage = function(context) {
+	selectSameLayerName(context, "page");
+}
+
+var selectSameLayerNameAndClassInPage = function(context) {
+	selectSameLayerNameAndClass(context, "page");
+}
+
+var selectSameLayerClassInPage = function(context) {
+	selectSameLayerClass(context, "page");
+}
+
+var selectSameSymbolInPage = function(context) {
+	selectSameSymbol(context, "page");
+}
+
+var selectSameSymbol = function(context, where = "artboard") {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
 	
@@ -99,146 +110,131 @@ var selectSameSymbol = function(context)
 		return;
 	}
 	
-	iterateThroughLayers(context, selectedLayer, selectIfSameSymbol);
+	iterateThroughLayers(context, selectedLayer, selectIfSameSymbol, where);
 }
 
-var selectSameFill = function(context)
-{
+var selectSameFill = function(context, where = "artboard") {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
 	var fill = firstVisibleFill(selectedLayer);
 
-	if(!fill) // Does the layer have any visible fills?
-	{
+	if(!fill) { // Does the layer have any visible fills?
 		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one fill and try again." withTitle:"No visible fills"];
 		return;
 	}
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameFill);
+	iterateThroughLayers(context, selectedLayer, selectIfSameFill, where);
 
 }
 
-var selectSameBorder = function(context)
-{
+var selectSameBorder = function(context, where = "artboard") {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
 	var border = firstVisibleBorder(selectedLayer);
 
-	if(!border) // Does the layer have any visible borders?
-	{
+	if(!border) { // Does the layer have any visible borders?
 		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
 		return;
 	}
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameBorder);
+	iterateThroughLayers(context, selectedLayer, selectIfSameBorder, where);
 }
 
-var selectSameBorderThickness = function(context)
-{
+var selectSameBorderThickness = function(context, where = "artboard") {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
 	var border = firstVisibleBorder(selectedLayer);
 
-	if(!border) // Does the layer have any visible borders?
-	{
+	if(!border) { // Does the layer have any visible borders?
 		[[NSApplication sharedApplication] displayDialog:"Please select a layer with at least one border and try again." withTitle:"No visible borders"];
 		return;
 	}
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameBorderThickness);
+	iterateThroughLayers(context, selectedLayer, selectIfSameBorderThickness, where);
 }
 
-var selectSameFont = function(context)
-{
+var selectSameFont = function(context, where = "artboard") {
+	console.log("Select same font in "+where);
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
-	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
-	{
+	if([selectedLayer class] != MSTextLayer) { // Is it a text layer?
 		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
 		return;
 	}
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameFontAndSize);
+	iterateThroughLayers(context, selectedLayer, selectIfSameFontAndSize, where);
 }
 
-var selectSameFontAndColor = function(context)
-{
+var selectSameFontAndColor = function(context, where = "artboard") {
 	// Error handling
 	if(!selectionErrorHandling(context, false)) return;
 
 	var selectedLayer = context.selection.firstObject();
-	if([selectedLayer class] != MSTextLayer) // Is it a text layer?
-	{
+	if([selectedLayer class] != MSTextLayer) { // Is it a text layer?
 		[[NSApplication sharedApplication] displayDialog:"Please select a text layer and try again." withTitle:"Layer is not of type text"];
 		return;
 	}
-	iterateThroughLayers(context, selectedLayer, selectIfSameFontSizeAndColor);
+	iterateThroughLayers(context, selectedLayer, selectIfSameFontSizeAndColor, where);
 }
 
-var selectSameOpacity = function(context)
-{
+var selectSameOpacity = function(context, where = "artboard") {
 	var selectedLayer = context.selection.firstObject();
 
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameOpacity);
+	iterateThroughLayers(context, selectedLayer, selectIfSameOpacity, where);
 }
 
-var selectSameBlendMode = function(context)
-{
+var selectSameBlendMode = function(context, where = "artboard") {
 	var selectedLayer = context.selection.firstObject();
 
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameBlendMode);
+	iterateThroughLayers(context, selectedLayer, selectIfSameBlendMode, where);
 }
 
-var selectSameLayerName = function(context)
-{
+var selectSameLayerName = function(context, where = "artboard") {
 	var selectedLayer = context.selection.firstObject();
 
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameLayerName);
+	iterateThroughLayers(context, selectedLayer, selectIfSameLayerName, where);
 }
 
-var selectSameLayerNameAndClass = function(context)
-{
+var selectSameLayerNameAndClass = function(context, where = "artboard") {
 	var selectedLayer = context.selection.firstObject();
 
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameLayerNameAndClass);
+	iterateThroughLayers(context, selectedLayer, selectIfSameLayerNameAndClass, where);
 }
 
-var selectSameLayerClass = function(context)
-{
+var selectSameLayerClass = function(context, where = "artboard") {
 	var selectedLayer = context.selection.firstObject();
 
 	// Error handling
 	if(!selectionErrorHandling(context, true)) return;
 
-	iterateThroughLayers(context, selectedLayer, selectIfSameLayerClass);
+	iterateThroughLayers(context, selectedLayer, selectIfSameLayerClass, where);
 }
 
 /***********************/
 /** Callback functions */
 /***********************/
 
-var selectIfSameFill = function(layer, selectedLayer)
-{
+var selectIfSameFill = function(layer, selectedLayer) {
 	if(typeof layer.style == "undefined" || typeof layer.style().fills == "undefined") { //  Replace type by features [layer class] == MSLayerGroup
 		return;
 	}
@@ -257,8 +253,7 @@ var selectIfSameFill = function(layer, selectedLayer)
 		//debugLog("layer.style ? " + layer.style());
 
 		if (fill.isEnabled()) {
-			for(var i = 0; i < layer.style().fills().count(); i++) // Repeat with every fill
-			{
+			for(var i = 0; i < layer.style().fills().count(); i++) { // Repeat with every fill
 				var thisFill = layer.style().fills().objectAtIndex(i)
 
 				if (thisFill.fillType() == fill.fillType()
@@ -318,8 +313,7 @@ var compareGradients = function(gradient1, gradient2) {
 	return true;
 }
 
-var selectIfSameBorder = function(layer, selectedLayer)
-{
+var selectIfSameBorder = function(layer, selectedLayer) {
 
 	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") { //  Replace type by features [layer class] == MSLayerGroup
 		return;
@@ -332,13 +326,10 @@ var selectIfSameBorder = function(layer, selectedLayer)
 
 	var color = firstVisibleBorder(selectedLayer).color();
 
-	if(layer.style().borders().count() > 0) // If layer has at least one border
-	{
-		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
-		{
+	if(layer.style().borders().count() > 0) { // If layer has at least one border
+		for(var i = 0; i < layer.style().borders().count(); i++) { // Repeat with every border
 			var border = layer.style().borders().objectAtIndex(i);
-			if(border.color().isEqual(color) && border.isEnabled())
-			{
+			if(border.color().isEqual(color) && border.isEnabled()) {
 				[layer select:true byExtendingSelection:true];
 				itemsMatched++;
 			}
@@ -346,8 +337,7 @@ var selectIfSameBorder = function(layer, selectedLayer)
 	}
 }
 
-var selectIfSameBorderThickness = function(layer, selectedLayer)
-{
+var selectIfSameBorderThickness = function(layer, selectedLayer) {
 
 	/**
 	if([layer class] == MSLayerGroup) {
@@ -361,14 +351,11 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 
 	var thickness = firstVisibleBorder(selectedLayer).thickness();
 
-	if(layer.style().borders().count() > 0) // If layer has at least one border
-	{
-		for(var i = 0; i < layer.style().borders().count(); i++) // Repeat with every border
-		{
+	if(layer.style().borders().count() > 0) { // If layer has at least one border
+		for(var i = 0; i < layer.style().borders().count(); i++) { // Repeat with every border
 			if(layer.style().borders().objectAtIndex(i).thickness() == thickness
 			&& layer.style().borders().objectAtIndex(i).isEnabled()
-			&& layer.isVisible())
-			{
+			&& layer.isVisible()) {
 				[layer select:true byExtendingSelection:true];
 				itemsMatched++;
 			}
@@ -377,26 +364,21 @@ var selectIfSameBorderThickness = function(layer, selectedLayer)
 	}
 }
 
-var selectIfSameFontAndSize = function(layer, selectedLayer)
-{
-	if([layer class] == MSTextLayer)
-	{
+var selectIfSameFontAndSize = function(layer, selectedLayer) {
+	if([layer class] == MSTextLayer) {
 		if(
 			layer.fontPostscriptName() == selectedLayer.fontPostscriptName()
 			&& layer.fontSize() == selectedLayer.fontSize()
 			&& layer.isVisible()
-      )
-		{
+      ) {
 			[layer select:true byExtendingSelection:true];
 			itemsMatched++;
 		}
 	}
 }
 
-var selectIfSameFontSizeAndColor = function(layer, selectedLayer)
-{
-	if([layer class] == MSTextLayer)
-	{
+var selectIfSameFontSizeAndColor = function(layer, selectedLayer) {
+	if([layer class] == MSTextLayer) {
         //rgb and alpha paring for the font color in the layer
     var layerFontColor = [layer.textColor().toString().substring(3,12), // Red Color parsing
                           layer.textColor().toString().substring(14,22),  // Green Color parsing
@@ -416,36 +398,30 @@ var selectIfSameFontSizeAndColor = function(layer, selectedLayer)
 			&& layerFontColor[2] == selectedLayerFontColor[2]
 			&& layerFontColor[3] == selectedLayerFontColor[3]
 			&& layer.isVisible()
-            )
-		{
-			[layer select:true byExtendingSelection:true];
-			itemsMatched++;
+			) {
+				[layer select:true byExtendingSelection:true];
+				itemsMatched++;
 		}
 	}
 }
 
-var selectIfSameOpacity = function(layer, selectedLayer)
-{
+var selectIfSameOpacity = function(layer, selectedLayer) {
 	if(selectedLayer.style().contextSettings().opacity() == layer.style().contextSettings().opacity()
-	&& layer.isVisible())
-	{
+	&& layer.isVisible()) {
 		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
 
-var selectIfSameBlendMode = function(layer, selectedLayer)
-{
+var selectIfSameBlendMode = function(layer, selectedLayer) {
 	if(selectedLayer.style().contextSettings().blendMode() == layer.style().contextSettings().blendMode()
-	&& layer.isVisible())
-	{
+	&& layer.isVisible()) {
 		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
 	}
 }
 
-var selectIfSameLayerName = function(layer, selectedLayer)
-{
+var selectIfSameLayerName = function(layer, selectedLayer) {
 	// add by Thierryc
 	if([selectedLayer name].localeCompare([layer name]) == 0) {
 		// debugLog("* Same name ");
@@ -454,8 +430,7 @@ var selectIfSameLayerName = function(layer, selectedLayer)
 	}
 }
 
-var selectIfSameLayerNameAndClass = function(layer, selectedLayer)
-{
+var selectIfSameLayerNameAndClass = function(layer, selectedLayer) {
 	// add by Thierryc
 	if([selectedLayer class] == [layer class] && [selectedLayer name].localeCompare([layer name]) == 0) {
 		// debugLog("* Same name and class");
@@ -464,8 +439,7 @@ var selectIfSameLayerNameAndClass = function(layer, selectedLayer)
 	}
 }
 
-var selectIfSameLayerClass = function(layer, selectedLayer)
-{
+var selectIfSameLayerClass = function(layer, selectedLayer) {
 	// add by seehadley
 	if([selectedLayer class] == [layer class]) {
 		// debugLog("* Same name and class");
@@ -474,8 +448,7 @@ var selectIfSameLayerClass = function(layer, selectedLayer)
 	}
 }
 
-var selectIfSameSymbol = function(layer, selectedLayer)
-{
+var selectIfSameSymbol = function(layer, selectedLayer) {
 	if ([layer class] == MSSymbolInstance) {
 		if ([selectedLayer symbolMaster] == [layer symbolMaster]) {
 			[layer select:true byExtendingSelection:true];
@@ -488,33 +461,33 @@ var selectIfSameSymbol = function(layer, selectedLayer)
 /** Utility functions */
 /**********************/
 
-var iterateThroughLayers = function(context, attr, callback)
-{
+var iterateThroughLayers = function(context, attr, callback, where) {
 	var doc = context.document;
 	var page = doc.currentPage();
 	var artboard = page.currentArtboard(); // if selected object is not inside of an artboard, this will be null.
-
+	var group = context.selection.firstObject().ancestors().lastObject();
+	console.log(group.name);
+	
 	debugLog("Objects on page: " + page.layers().count());
-
-	if(selectInAllArtboards || !artboard)
-	{
-		for (var j = 0; j < page.layers().count(); j++) {
-			var layer = page.layers().objectAtIndex(j);
-
+	
+	
+	if(where == "page" || !artboard) {
+		for (var i = 0; i < page.layers().count(); i++) {
+			var layer = page.layers().objectAtIndex(i);
 			handleObject(layer, attr, callback);
 		}
-	} else {
-		for (var k = 0; k < artboard.layers().count(); k++) {
-			var layer = artboard.layers().objectAtIndex(k);
-			handleObject(layer, attr, callback);
-		}
+	} else if (where == "artboard") {
+		handleObject(artboard, attr, callback);
+	} else if (where == "group") {
+		handleObject(group, attr, callback);
 	}
+	
+	
 	// add by Thierryc
-	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " selected"];
+	[doc showMessage: itemsMatched + " item" + (itemsMatched != 1 ? "s" : "") + " selected in " + where];
 }
 
-var handleObject = function(obj, attr, fn)
-{
+var handleObject = function(obj, attr, fn, recursive = true) {
 
 	//debugLog("handle object: "+ [obj class]);
 
@@ -535,9 +508,10 @@ var handleObject = function(obj, attr, fn)
 
 		// Call the function on the group itself
 		fn.call(this, obj, attr);
+		
+		if (!recursive) { return; }
 		// Call the function on each of the group inside the layers
-		for(var i = 0; i < obj.layers().count(); i++)
-		{
+		for(var i = 0; i < obj.layers().count(); i++) {
 			layer = obj.layers().objectAtIndex(i);
 			handleObject(layer, attr, fn);
 		}
@@ -549,9 +523,10 @@ var handleObject = function(obj, attr, fn)
 
 		// Call the function on the group itself
 		fn.call(this, obj, attr);
+		
+		if (!recursive) { return; }
 		// Call the function on each of the group inside the layers
-		for(var i = 0; i < obj.layers().count(); i++)
-		{
+		for(var i = 0; i < obj.layers().count(); i++) {
 			layer = obj.layers().objectAtIndex(i);
 			handleObject(layer, attr, fn);
 		}
@@ -563,8 +538,7 @@ var handleObject = function(obj, attr, fn)
 		// Call the function on the group itself
 		fn.call(this, obj, attr);
 		// Call the function on each of the group inside the layers
-		for(var i = 0; i < obj.layers().count(); i++)
-		{
+		for(var i = 0; i < obj.layers().count(); i++) {
 			layer = obj.layers().objectAtIndex(i);
 			handleObject(layer, attr, fn);
 		}
@@ -576,9 +550,10 @@ var handleObject = function(obj, attr, fn)
 	if([obj class] == MSSymbolMaster) {
 		// Call the function on the group itself
 		fn.call(this, obj, attr);
+		
+		if (!recursive) { return; }
 		// Call the function on each of the group inside the layers
-		for(var i = 0; i < obj.layers().count(); i++)
-		{
+		for(var i = 0; i < obj.layers().count(); i++) {
 			layer = obj.layers().objectAtIndex(i);
 			handleObject(layer, attr, fn);
 		}
@@ -589,17 +564,14 @@ var handleObject = function(obj, attr, fn)
 	fn.call(this, obj, attr);
 }
 
-var firstVisibleFill = function(layer)
-{
+var firstVisibleFill = function(layer) {
 	if(typeof layer.style == "undefined" || typeof layer.style().fills == "undefined") {
 		return;
 	}
 
-	for(var i = 0; i < layer.style().fills().count(); i++)
-	{
+	for(var i = 0; i < layer.style().fills().count(); i++) {
 		var fill = layer.style().fills().objectAtIndex(i);
-		if(fill.isEnabled())
-		{
+		if(fill.isEnabled()) {
 			return fill;
 		}
 	}
@@ -607,17 +579,14 @@ var firstVisibleFill = function(layer)
 	return false;
 }
 
-var firstVisibleBorder = function(layer)
-{
+var firstVisibleBorder = function(layer) {
 	if(typeof layer.style == "undefined" || typeof layer.style().borders == "undefined") {
 		return;
 	}
 
-	for(var i = 0; i < layer.style().borders().count(); i++)
-	{
+	for(var i = 0; i < layer.style().borders().count(); i++) {
 		var border = layer.style().borders().objectAtIndex(i);
-		if(border.isEnabled())
-		{
+		if(border.isEnabled()) {
 			return border;
 		}
 	}
@@ -625,30 +594,24 @@ var firstVisibleBorder = function(layer)
 	return false;
 }
 
-var selectionErrorHandling = function(context, groupsAllowed)
-{
-	if(context.selection.count() == 0) // Nothing selected
-	{
+var selectionErrorHandling = function(context, groupsAllowed) {
+	if(context.selection.count() == 0) { // Nothing selected
 		[[NSApplication sharedApplication] displayDialog:"You must select a layer in order to use this plugin." withTitle:"No layers selected!"];
 		return false;
 	}
 
-	if(context.selection.count() > 1) // More than one layer selected
-	{
+	if(context.selection.count() > 1) { // More than one layer selected
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with multiple layers. Please select a single layer and try again." withTitle:"Multiple layers selected!"];
 		return false;
 	}
 
-
 	var firstObject = context.selection.firstObject();
-	if([firstObject class] == MSLayerGroup && groupsAllowed == false) // Group selected
-	{
+	if([firstObject class] == MSLayerGroup && groupsAllowed == false) { // Group selected
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with groups. Please select a layer instead." withTitle:"You've selected a group!"];
 		return false;
 	}
 
-	if([firstObject class] == MSSliceLayer) // Slice selected
-	{
+	if([firstObject class] == MSSliceLayer) { // Slice selected
 		[[NSApplication sharedApplication] displayDialog:"This plugin doesn't work with slices. Please select a layer instead." withTitle:"You've selected a slice!"];
 		return false;
 	}

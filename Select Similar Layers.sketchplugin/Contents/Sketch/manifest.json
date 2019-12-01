@@ -60,14 +60,14 @@
 			"script": "script.cocoascript",
 			"handler": "selectSameLayerNameAndClass",
 			"shortcut": "ctrl alt 8",
-			"name": "Name and Class (type)",
+			"name": "Name and Layer Type",
 			"identifier": "selectSameLayerNameAndClass"
 		},
 		{
 			"script": "script.cocoascript",
 			"handler": "selectSameLayerClass",
 			"shortcut": "ctrl alt 9",
-			"name": "Class (type)",
+			"name": "Layer Type",
 			"identifier": "selectSameLayerClass"
 		},
 		{
@@ -79,87 +79,187 @@
 		},
 		
 		
+		
+		
+		
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameFillInAllArtboards",
-			"shortcut": "ctrl alt shift 1",
+			"handler": "selectSameFillInGroup",
+			"shortcut": "ctrl cmd 1",
 			"name": "Fill Color",
-			"identifier": "selectSameFillInAllArtboards"
+			"identifier": "selectSameFillInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameBorderInAllArtboards",
-			"shortcut": "ctrl alt shift 2",
+			"handler": "selectSameBorderInGroup",
+			"shortcut": "ctrl cmd 2",
 			"name": "Border Color",
-			"identifier": "selectSameBorderInAllArtboards"
+			"identifier": "selectSameBorderInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameBorderThicknessInAllArtboards",
-			"shortcut": "ctrl alt shift 3",
+			"handler": "selectSameBorderThicknessInGroup",
+			"shortcut": "ctrl cmd 3",
 			"name": "Border Thickness",
-			"identifier": "selectSameBorderThicknessInAllArtboards"
+			"identifier": "selectSameBorderThicknessInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameFontInAllArtboards",
-			"shortcut": "ctrl alt shift 4",
+			"handler": "selectSameFontInGroup",
+			"shortcut": "ctrl cmd 4",
 			"name": "Font",
-			"identifier": "selectSameFontInAllArtboards"
+			"identifier": "selectSameFontInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameFontAndColorInAllArtboards",
+			"handler": "selectSameFontAndColorInGroup",
 			"name": "Font and Color",
-			"identifier": "selectSameFontAndColorInAllArtboards"
+			"identifier": "selectSameFontAndColorInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameOpacityInAllArtboards",
-			"shortcut": "ctrl alt shift 5",
+			"handler": "selectSameOpacityInGroup",
+			"shortcut": "ctrl cmd 5",
 			"name": "Opacity",
-			"identifier": "selectSameOpacityInAllArtboards"
+			"identifier": "selectSameOpacityInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameBlendModeInAllArtboards",
-			"shortcut": "ctrl alt shift 6",
+			"handler": "selectSameBlendModeInGroup",
+			"shortcut": "ctrl cmd 6",
 			"name": "Blend Mode",
-			"identifier": "selectSameBlendModeInAllArtboards"
+			"identifier": "selectSameBlendModeInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameLayerNameInAllArtboards",
-			"shortcut": "ctrl alt shift 7",
+			"handler": "selectSameLayerNameInGroup",
+			"shortcut": "ctrl cmd 7",
 			"name": "Name",
-			"identifier": "selectSameLayerNameInAllArtboards"
+			"identifier": "selectSameLayerNameInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameLayerNameAndClassInAllArtboards",
-			"shortcut": "ctrl alt shift 8",
-			"name": "Name and Class",
-			"identifier": "selectSameLayerNameAndClassInAllArtboards"
+			"handler": "selectSameLayerNameAndClassInGroup",
+			"shortcut": "ctrl cmd 8",
+			"name": "Name and Layer Type",
+			"identifier": "selectSameLayerNameAndClassInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameLayerClassInAllArtboards",
-			"shortcut": "ctrl alt shift 9",
-			"name": "Class",
-			"identifier": "selectSameLayerClassInAllArtboards"
+			"handler": "selectSameLayerClassInGroup",
+			"shortcut": "ctrl cmd 9",
+			"name": "Layer Type",
+			"identifier": "selectSameLayerClassInGroup"
 		},
 		{
 			"script": "script.cocoascript",
-			"handler": "selectSameSymbolInAllArtboards",
-			"shortcut": "ctrl alt shift 0",
+			"handler": "selectSameSymbolInGroup",
+			"shortcut": "ctrl cmd 0",
 			"name": "Symbol",
-			"identifier": "selectSameSymbolInAllArtboards"
+			"identifier": "selectSameSymbolInGroup"
+		},
+		
+		
+		
+		
+		
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameFillInPage",
+			"shortcut": "ctrl alt cmd 1",
+			"name": "Fill Color",
+			"identifier": "selectSameFillInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameBorderInPage",
+			"shortcut": "ctrl alt cmd 2",
+			"name": "Border Color",
+			"identifier": "selectSameBorderInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameBorderThicknessInPage",
+			"shortcut": "ctrl alt cmd 3",
+			"name": "Border Thickness",
+			"identifier": "selectSameBorderThicknessInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameFontInPage",
+			"shortcut": "ctrl alt cmd 4",
+			"name": "Font",
+			"identifier": "selectSameFontInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameFontAndColorInPage",
+			"name": "Font and Color",
+			"identifier": "selectSameFontAndColorInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameOpacityInPage",
+			"shortcut": "ctrl alt cmd 5",
+			"name": "Opacity",
+			"identifier": "selectSameOpacityInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameBlendModeInPage",
+			"shortcut": "ctrl alt cmd 6",
+			"name": "Blend Mode",
+			"identifier": "selectSameBlendModeInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameLayerNameInPage",
+			"shortcut": "ctrl alt cmd 7",
+			"name": "Name",
+			"identifier": "selectSameLayerNameInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameLayerNameAndClassInPage",
+			"shortcut": "ctrl alt cmd 8",
+			"name": "Name and Layer Type",
+			"identifier": "selectSameLayerNameAndClassInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameLayerClassInPage",
+			"shortcut": "ctrl alt cmd 9",
+			"name": "Layer Type",
+			"identifier": "selectSameLayerClassInPage"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameSymbolInPage",
+			"shortcut": "ctrl alt cmd 0",
+			"name": "Symbol",
+			"identifier": "selectSameSymbolInPage"
 		}
 	],
 	"menu": {
 		"items": [
 			{
-				"title": "In Current Artboard",
+				"title": "In Group",
+				"items": [
+					"selectSameFillInGroup",
+					"selectSameBorderInGroup",
+					"selectSameBorderThicknessInGroup",
+					"selectSameFontInGroup",
+					"selectSameFontAndColorInGroup",
+					"selectSameOpacityInGroup",
+					"selectSameBlendModeInGroup",
+					"selectSameLayerNameInGroup",
+					"selectSameLayerNameAndClassInGroup",
+					"selectSameLayerClassInGroup",
+					"selectSameSymbolInGroup"
+				]
+			},
+			{
+				"title": "In Artboard",
 				"items": [
 					"selectSameFill",
 					"selectSameBorder",
@@ -175,25 +275,25 @@
 				]
 			},
 			{
-				"title": "In All Artboards",
+				"title": "In Page",
 				"items": [
-					"selectSameFillInAllArtboards",
-					"selectSameBorderInAllArtboards",
-					"selectSameBorderThicknessInAllArtboards",
-					"selectSameFontInAllArtboards",
-					"selectSameFontAndColorInAllArtboards",
-					"selectSameOpacityInAllArtboards",
-					"selectSameBlendModeInAllArtboards",
-					"selectSameLayerNameInAllArtboards",
-					"selectSameLayerNameAndClassInAllArtboards",
-					"selectSameLayerClassInAllArtboards",
-					"selectSameSymbolInAllArtboards"
+					"selectSameFillInPage",
+					"selectSameBorderInPage",
+					"selectSameBorderThicknessInPage",
+					"selectSameFontInPage",
+					"selectSameFontAndColorInPage",
+					"selectSameOpacityInPage",
+					"selectSameBlendModeInPage",
+					"selectSameLayerNameInPage",
+					"selectSameLayerNameAndClassInPage",
+					"selectSameLayerClassInPage",
+					"selectSameSymbolInPage"
 				]
 			}
 		]
 	},
 	"identifier": "me.wessley.selectSimilarLayers",
-	"version": "1.5",
+	"version": "1.6",
 	"description": "A plugin that selects layers with similar attributes to those of the layer currently selected.",
 	"authorEmail": "rochewes@gmail.com",
 	"name": "Select Similar Layers"
