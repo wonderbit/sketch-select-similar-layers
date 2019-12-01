@@ -1,5 +1,4 @@
 // TODO: Select layers with the same shadow / inner shadow
-// TODO: Select same symbols
 // TODO: Select layers with the same shared style
 
 /*
@@ -16,13 +15,6 @@ var debugLog = function(msg) {
 	if (debugMode) {
 		log(msg);
 	}
-}
-
-var selectSameFillInAllArtboards = function(context)
-{
-	selectInAllArtboards = true;
-	selectSameFill(context);
-	selectInAllArtboards = false;
 }
 
 var selectSameBorderInAllArtboards = function(context)
@@ -86,6 +78,28 @@ var selectSameLayerClassInAllArtboards = function(context)
 	selectInAllArtboards = true;
 	selectSameLayerClass(context);
 	selectInAllArtboards = false;
+}
+
+var selectSameInstanceInAllArtboards = function(context)
+{
+	selectInAllArtboards = true;
+	selectSameInstance(context);
+	selectInAllArtboards = false;
+}
+
+var selectSameInstance = function(context)
+{
+	// Error handling
+	if(!selectionErrorHandling(context, false)) return;
+	
+	var selectedLayer = context.selection.firstObject();
+	
+	if ([selectedLayer class] != MSSymbolInstance) {
+		[[NSApplication sharedApplication] displayDialog:"Please select a symbol instance and try again." withTitle:"Not a symbol instance"];
+		return;
+	}
+	
+	iterateThroughLayers(context, selectedLayer, selectIfSameInstance);
 }
 
 var selectSameFill = function(context)
@@ -457,6 +471,16 @@ var selectIfSameLayerClass = function(layer, selectedLayer)
 		// debugLog("* Same name and class");
 		[layer select:true byExtendingSelection:true];
 		itemsMatched++;
+	}
+}
+
+var selectIfSameInstance = function(layer, selectedLayer)
+{
+	if ([layer class] == MSSymbolInstance) {
+		if ([selectedLayer symbolMaster] == [layer symbolMaster]) {
+			[layer select:true byExtendingSelection:true];
+			itemsMatched++;
+		}
 	}
 }
 

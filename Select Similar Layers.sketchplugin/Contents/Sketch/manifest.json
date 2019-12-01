@@ -70,6 +70,13 @@
 			"name": "Class (type)",
 			"identifier": "selectSameLayerClass"
 		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameInstance",
+			"shortcut": "ctrl alt 0",
+			"name": "Instance",
+			"identifier": "selectSameInstance"
+		},
 		
 		
 		{
@@ -140,6 +147,13 @@
 			"shortcut": "ctrl alt shift 9",
 			"name": "Class",
 			"identifier": "selectSameLayerClassInAllArtboards"
+		},
+		{
+			"script": "script.cocoascript",
+			"handler": "selectSameInstanceInAllArtboards",
+			"shortcut": "ctrl alt shift 0",
+			"name": "Instance",
+			"identifier": "selectSameInstanceInAllArtboards"
 		}
 	],
 	"menu": {
@@ -156,7 +170,8 @@
 					"selectSameBlendMode",
 					"selectSameLayerName",
 					"selectSameLayerNameAndClass",
-					"selectSameLayerClass"
+					"selectSameLayerClass",
+					"selectSameInstance"
 				]
 			},
 			{
@@ -171,7 +186,8 @@
 					"selectSameBlendModeInAllArtboards",
 					"selectSameLayerNameInAllArtboards",
 					"selectSameLayerNameAndClassInAllArtboards",
-					"selectSameLayerClassInAllArtboards"
+					"selectSameLayerClassInAllArtboards",
+					"selectSameInstanceInAllArtboards"
 				]
 			}
 		]
