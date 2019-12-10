@@ -17,6 +17,10 @@ var debugLog = function(msg) {
 
 // Select in Group
 
+var selectSameFillInGroup = function(context) {
+	selectSameFill(context, "group");
+}
+
 var selectSameBorderInGroup = function(context) {
 	selectSameBorder(context, "group");
 }
@@ -57,11 +61,15 @@ var selectSameSymbolInGroup = function(context) {
 	selectSameSymbol(context, "group");
 }
 
+// Select in Page
+
+var selectSameFillInPage = function(context) {
+	selectSameFill(context, "page");
+}
+
 var selectSameBorderInPage = function(context) {
 	selectSameBorder(context, "page");
 }
-
-// Select in Page
 
 var selectSameBorderThicknessInPage = function(context) {
 	selectSameBorderThickness(context, "page");
