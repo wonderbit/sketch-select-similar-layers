@@ -256,9 +256,9 @@ var selectIfSameFill = function(layer, selectedLayer) {
 		// debugLog("Selected layer fill type: " + fill.fillType());
 		// debugLog("Selected layer gradient type: " + fill.gradient().gradientType());
 		// debugLog("Selected layer noise pattern: " + fill.noiseIndex());
-
-		//debugLog("layer: " + [layer class]);
-		//debugLog("layer.style ? " + layer.style());
+		//
+		// debugLog("layer: " + [layer class]);
+		// debugLog("layer.style ? " + layer.style());
 
 		if (fill.isEnabled()) {
 			for(var i = 0; i < layer.style().fills().count(); i++) { // Repeat with every fill
@@ -268,12 +268,12 @@ var selectIfSameFill = function(layer, selectedLayer) {
 				&& thisFill.isEnabled()
 				&& layer.isVisible()) {
 					if (fill.fillType() == 0) { // Color
-						if (thisFill.color().isEqual(fill.color())) {
+						if (isSameColor(thisFill.color(), fill.color())) {
 							debugLog("* Same color");
 							shouldSelect = true;
 						}
 					} else if (fill.fillType() == 1) { // Gradient
-						if (compareGradients(thisFill.gradient(), fill.gradient())) {
+						if (isSameGradient(thisFill.gradient(), fill.gradient())) {
 							debugLog("* Same gradient");
 							shouldSelect = true;
 						}
@@ -299,7 +299,12 @@ var selectIfSameFill = function(layer, selectedLayer) {
 	}
 }
 
-var compareGradients = function(gradient1, gradient2) {
+
+var isSameColor = function(left, right) {
+	return left.red() == right.red() && left.green() == right.green() && left.blue() == right.blue() && left.alpha() == right.alpha()
+}
+
+var isSameGradient = function(gradient1, gradient2) {
 	if(gradient1.gradientType() != gradient2.gradientType()) {
 		debugLog("different gradient types");
 		return false;
@@ -311,7 +316,7 @@ var compareGradients = function(gradient1, gradient2) {
 	}
 
 	for(var i = 0; i < gradient1.stops().count(); i++) {
-		if(!gradient1.stops().objectAtIndex(i).color().isEqual(gradient2.stops().objectAtIndex(i).color())) {
+		if(!isSameColor(gradient1.stops().objectAtIndex(i).color(), gradient2.stops().objectAtIndex(i).color())) {
 			debugLog("different color at stop number "+i);
 			return false;
 		}
@@ -337,7 +342,7 @@ var selectIfSameBorder = function(layer, selectedLayer) {
 	if(layer.style().borders().count() > 0) { // If layer has at least one border
 		for(var i = 0; i < layer.style().borders().count(); i++) { // Repeat with every border
 			var border = layer.style().borders().objectAtIndex(i);
-			if(border.color().isEqual(color) && border.isEnabled()) {
+			if(isSameColor(border.color(), color) && border.isEnabled()) {
 				[layer select:true byExtendingSelection:true];
 				itemsMatched++;
 			}
