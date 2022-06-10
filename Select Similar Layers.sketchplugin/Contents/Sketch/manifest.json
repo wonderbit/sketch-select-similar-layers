@@ -293,8 +293,9 @@
 		]
 	},
 	"identifier": "me.wessley.selectSimilarLayers",
-	"version": "1.6",
+	"version": "1.6.1",
 	"description": "A plugin that selects layers with similar attributes to those of the layer currently selected.",
 	"authorEmail": "rochewes@gmail.com",
-	"name": "Select Similar Layers"
+	"name": "Select Similar Layers",
+	"icon": "icon.png"
 }
